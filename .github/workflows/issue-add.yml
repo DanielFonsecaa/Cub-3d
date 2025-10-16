@@ -1,0 +1,53 @@
+name: Auto-add new issue to user project "To Do" column
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  add-issue-to-user-project:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add issue to user project To Do column
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const projectNumber = 4; // Your user project number
+            const projectOwner = 'DanielFonsecaa'; // Your GitHub username
+
+            // Get the opened issue info
+            const issue = context.payload.issue;
+
+            // List user projects to find the project ID
+            const { data: projects } = await github.rest.projects.listForUser({
+              username: projectOwner,
+              state: 'open'
+            });
+
+            const project = projects.find(p => p.number === projectNumber);
+            if (!project) {
+              core.setFailed(`User project #${projectNumber} not found for user ${projectOwner}.`);
+              return;
+            }
+
+            // List columns for this project
+            const { data: columns } = await github.rest.projects.listColumns({
+              project_id: project.id
+            });
+
+            // Find the "To Do" column
+            const toDoColumn = columns.find(col => col.name.toLowerCase() === 'to do');
+            if (!toDoColumn) {
+              core.setFailed('Could not find "To Do" column in the project.');
+              return;
+            }
+
+            // Add the issue as a card in the "To Do" column
+            await github.rest.projects.createCard({
+              column_id: toDoColumn.id,
+              content_id: issue.node_id,
+              content_type: 'Issue'
+            });
+
+            console.log(`Issue #${issue.number} added to project #${projectNumber} ("To Do" column).`);
