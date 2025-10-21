@@ -81,6 +81,7 @@ $(NAME): $(BUILD_PATH) $(LIBFT_ARC) $(MLX_ARC) $(OBJS)			## Compile
 	@echo "$(GOLD)Compiling $(SILV)$(NAME)$(GOLD) mandatory version$(D)"
 	$(CC) $(CFLAGS) $(OBJS) $(INC) $(LIBFT_ARC) $(MLX_ARC) $(RFLAGS) -o $(NAME)
 	@echo "[$(_SUCCESS) compiling $(SILV)$(NAME)$(D) $(GOLD)🖔$(D)]"
+	@clear
 
 deps:		## Download/Update deps
 	@if test -d "$(MLX_PATH)"; then \
@@ -155,6 +156,9 @@ libclean: fclean	## Remove libs
 	@echo "$(GOLD)Cleaning libraries$(D)"
 	$(RM) $(MLX_PATH)
 	@echo "$(GOLD)Removing mlx folder & files!$(D) : $(_SUCCESS)"
+
+val: re
+	@valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --tool=memcheck ./$(NAME) $(MAP)
 
 re: libclean all	## Purge & Recompile
 
