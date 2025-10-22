@@ -33,6 +33,7 @@ BUILD_PATH		= .build
 
 FILES			=	main.c \
 					canvas/canvas.c \
+					canvas/parsing.c \
 					game.c \
 					player.c
 

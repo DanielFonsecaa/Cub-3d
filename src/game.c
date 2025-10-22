@@ -10,15 +10,7 @@ void	init_game(t_game *game)
 
     init_player(game->player);
     init_canvas(game->canvas);
-    game->data = mlx_get_data_addr(game->canvas->img, &game->bpp, &game->size_line, &game->endian);
-	game->north.img = mlx_xpm_file_to_image(game->canvas->mlx, "textures/north.xpm", &game->north.width, &game->north.height);
-	game->north.data = mlx_get_data_addr(game->north.img, &game->north.bpp, &game->north.size_line, &game->north.endian);
-	game->south.img = mlx_xpm_file_to_image(game->canvas->mlx, "textures/south.xpm", &game->south.width, &game->south.height);
-	game->south.data = mlx_get_data_addr(game->south.img, &game->south.bpp, &game->south.size_line, &game->south.endian);
-	game->west.img = mlx_xpm_file_to_image(game->canvas->mlx, "textures/west.xpm", &game->west.width, &game->west.height);
-	game->west.data = mlx_get_data_addr(game->west.img, &game->west.bpp, &game->west.size_line, &game->west.endian);
-	game->east.img = mlx_xpm_file_to_image(game->canvas->mlx, "textures/east.xpm", &game->east.width, &game->east.height);
-	game->east.data = mlx_get_data_addr(game->east.img, &game->east.bpp, &game->east.size_line, &game->east.endian);
+	fill_background(game);
 }
 
 int	game_loop(t_game *game)
@@ -30,7 +22,8 @@ int	game_loop(t_game *game)
 
 	player = game->player;
 	move_player(game);
-	clear_canvas(game);
+	//clear_canvas(game);
+	fill_background(game);
 	if (DEBUG)
 	{
 		draw_square((int)player->x, (int)player->y, 10, GREEN, game); // small debug square

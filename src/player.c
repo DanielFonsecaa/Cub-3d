@@ -2,9 +2,9 @@
 
 void	init_player(t_player *player)
 {
-	player->x = WIDTH / 2.0; //put the player in the center
-	player->y = HEIGHT / 2.0;
-	player->angle = PI / 2; //90 degrees facing
+	player->x = WIDTH / 6.0; //put the player in the center
+	player->y = HEIGHT / 7.0;
+	player->angle = PI / 16; //90 degrees facing
 	player->key_up = false;
 	player->key_down = false;
 	player->key_left = false;
@@ -16,7 +16,7 @@ void	init_player(t_player *player)
 int	key_press(int keycode, t_game *game)
 {
 	if (keycode == XK_Escape)
-		close_game(game);
+		close_game(game, CLOSE_GAME);
 	if (keycode == W)
 		game->player->key_up = true;
 	if (keycode == S)
@@ -52,7 +52,7 @@ int	key_release(int keycode, t_player *player)
 void	move_player(t_game *game)
 {
 	int speed = 2;
-	double angle_speed = 0.01;
+	double angle_speed = 0.03;
 	double cos_angle = cos(game->player->angle);
 	double sin_angle = sin(game->player->angle);
 

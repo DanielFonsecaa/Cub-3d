@@ -7,44 +7,6 @@ void	init_canvas(t_canvas *canvas)
 	canvas->img = mlx_new_image(canvas->mlx, WIDTH, HEIGHT);
 }
 
-//very bad, this need a huge refactor, sorry kkkkkk
-char	**get_map(char *map_name)
-{
-	int		fd;
-	char	*line;
-	char	**map;
-	size_t	count;
-
-	count = 0;
-	fd = open(map_name, O_RDONLY);
-	map = malloc(16 * sizeof(char *));
-	if (!map)
-		return (NULL);
-	while ((line = get_next_line(fd)) != NULL)
-	{
-		map[count++] = line;
-		//free(line);
-		//line = NULL;
-	}
-	close(fd);
-	map[count] = NULL;
-	return (map);
-}
-
-void	clear_canvas(t_game *game)
-{
-	int	i;
-	int	j;
-
-	i = -1;
-	while (++i < HEIGHT)
-	{
-		j = -1;
-		while (++j < WIDTH)
-			put_pixel(j, i, 0, game);
-	}
-}
-
 void	draw_square(int x, int y, int size, int color, t_game *game)
 {
 	int	i;
@@ -99,122 +61,182 @@ double	fixed_dist(double x1, double y1, double x2, double y2, t_game *game)
 // touch function 
 bool	touch(double px, double py, t_game *game)
 {
-	int x = px / BLOCK;
-	int y = py / BLOCK;
-	if(game->map[y][x] == '1')
+	int x;
+	int y;
+	int rows;
+	size_t row_len;
+
+	if (!game || !game->map)
+		return (true); /* treat missing map as wall */
+
+	x = (int)(px / BLOCK);
+	y = (int)(py / BLOCK);
+
+	/* count map rows */
+	rows = 0;
+	while (game->map[rows])
+		rows++;
+
+	/* out of vertical bounds -> treat as wall */
+	if (y < 0 || y >= rows)
 		return (true);
-	return (false);
+
+	/* get length of this row and check horizontal bounds */
+	row_len = ft_strlen(game->map[y]);
+	if (x < 0 || (size_t)x >= row_len)
+		return (true);
+
+	return (game->map[y][x] == '1');
 }
 
 
 // raycasting functions
 void	draw_line(t_player *player, t_game *game, double start_x, int i)
 {
-    double cos_angle = cos(start_x);
-    double sin_angle = sin(start_x);
-    double ray_x = player->x;
-    double ray_y = player->y;
+	double cos_angle = cos(start_x);
+	double sin_angle = sin(start_x);
 
-    double delta_dist_x = fabs(1 / cos_angle);
-    double delta_dist_y = fabs(1 / sin_angle);
-    double side_dist_x, side_dist_y;
-    int step_x, step_y;
-    int map_x = (int)(player->x / BLOCK);
-    int map_y = (int)(player->y / BLOCK);
+	/* guard against exact zeros */
+	const double EPS = 1e-9;
+	/* delta_dist = distance along the ray to cross one grid cell (in pixels) */
+	double delta_dist_x = (fabs(cos_angle) < EPS) ? 1e30 : fabs((double)BLOCK / cos_angle);
+	double delta_dist_y = (fabs(sin_angle) < EPS) ? 1e30 : fabs((double)BLOCK / sin_angle);
 
-    if (cos_angle < 0) {
-        step_x = -1;
-        side_dist_x = (player->x - map_x * BLOCK) * delta_dist_x;
-    } else {
-        step_x = 1;
-        side_dist_x = ((map_x + 1) * BLOCK - player->x) * delta_dist_x;
-    }
-    if (sin_angle < 0) {
-        step_y = -1;
-        side_dist_y = (player->y - map_y * BLOCK) * delta_dist_y;
-    } else {
-        step_y = 1;
-        side_dist_y = ((map_y + 1) * BLOCK - player->y) * delta_dist_y;
-    }
+	int map_x = (int)(player->x / BLOCK);
+	int map_y = (int)(player->y / BLOCK);
 
-    int side = -1; /* 0 = vertical (x-side), 1 = horizontal (y-side) */
-    /* DDA loop: step through map cells until we hit a wall */
-    while (!touch(ray_x, ray_y, game))
-    {
-        if (side_dist_x < side_dist_y)
-        {
-            side_dist_x += delta_dist_x;
-            map_x += step_x;
-            side = 0; /* we moved in x (vertical wall) */
-        }
-        else
-        {
-            side_dist_y += delta_dist_y;
-            map_y += step_y;
-            side = 1; /* we moved in y (horizontal wall) */
-        }
-        /* compute tentative ray end using the distance before the last step */
-        /* (we will compute perp_dist below using the same values) */
-        ray_x = player->x + (side == 0 ? (side_dist_x - delta_dist_x) * cos_angle : (side_dist_y - delta_dist_y) * cos_angle);
-        ray_y = player->y + (side == 0 ? (side_dist_x - delta_dist_x) * sin_angle : (side_dist_y - delta_dist_y) * sin_angle);
-    }
+	int step_x = (cos_angle < 0) ? -1 : 1;
+	int step_y = (sin_angle < 0) ? -1 : 1;
 
-    /* perpendicular distance along the ray to the wall hit (use DDA distances) */
-    double perp_dist = (side == 0) ? (side_dist_x - delta_dist_x) : (side_dist_y - delta_dist_y);
-    /* recompute exact hit point (consistent) */
-    ray_x = player->x + perp_dist * cos_angle;
-    ray_y = player->y + perp_dist * sin_angle;
+	double side_dist_x;
+	double side_dist_y;
 
-    /* choose texture based on side & step direction (robust at corners) */
-    t_texture *texture;
-    if (side == 0) /* vertical wall -> EAST/WEST */
-        texture = (step_x > 0) ? &game->east : &game->west;
-    else /* horizontal wall -> SOUTH/NORTH */
-        texture = (step_y > 0) ? &game->south : &game->north;
+	/* distance from player to first vertical/horizontal gridline along the ray (same units as delta_dist) */
+	if (step_x < 0)
+		side_dist_x = (player->x - map_x * BLOCK) / (fabs(cos_angle) < EPS ? 1.0 : fabs(cos_angle));
+	else
+		side_dist_x = ((map_x + 1) * BLOCK - player->x) / (fabs(cos_angle) < EPS ? 1.0 : fabs(cos_angle));
 
-    /* compute exact position on the wall (in world coords) and tex X */
-    double wall_hit = (side == 0) ? fmod(ray_y, BLOCK) : fmod(ray_x, BLOCK);
-    if (wall_hit < 0) wall_hit += BLOCK;
-    int tex_x = (int)((wall_hit / (double)BLOCK) * texture->width);
-    if (tex_x < 0) tex_x = 0;
-    if (tex_x >= texture->width) tex_x = texture->width - 1;
+	if (step_y < 0)
+		side_dist_y = (player->y - map_y * BLOCK) / (fabs(sin_angle) < EPS ? 1.0 : fabs(sin_angle));
+	else
+		side_dist_y = ((map_y + 1) * BLOCK - player->y) / (fabs(sin_angle) < EPS ? 1.0 : fabs(sin_angle));
 
-    if (!DEBUG)
-    {
-        double dist = perp_dist; /* could also use fixed_dist if you prefer */
-        double height = (BLOCK / dist) * (WIDTH / 2);
-        if (height < 1) height = 1;
-        int start_y = (HEIGHT - height) / 2;
-        int end = start_y + height;
-        int y = start_y;
-        while (y < end)
-        {
-            int tex_y = ((y - start_y) * texture->height) / height;
-            if (tex_y < 0) tex_y = 0;
-            if (tex_y >= texture->height) tex_y = texture->height - 1;
-            int t_idx = tex_y * texture->size_line + tex_x * (texture->bpp / 8);
+	int side = -1; /* 0 = vertical (x-side), 1 = horizontal (y-side) */
 
-            int color;
-            if (texture->bpp == 32)
-                color = *(int *)(texture->data + t_idx);
-            else if (texture->bpp == 24) {
-                unsigned char *d = (unsigned char *)(texture->data + t_idx);
-                color = d[0] | (d[1] << 8) | (d[2] << 16);
-            } else {
-                color = 0xFFFFFF;
-            }
-            put_pixel(i, y, color, game);
-            y++;
-        }
-    }
+	/* DDA loop with bounds checks and iteration limit */
+	int iter = 0;
+	int rows = 0;
+	while (game->map[rows]) rows++;
+	while (1)
+	{
+		if (++iter > 10000) /* fail-safe */
+			break;
+
+		if (side_dist_x < side_dist_y)
+		{
+			side_dist_x += delta_dist_x;
+			map_x += step_x;
+			side = 0;
+		}
+		else
+		{
+			side_dist_y += delta_dist_y;
+			map_y += step_y;
+			side = 1;
+		}
+
+		/* bounds check: treat out-of-bounds as wall hit and stop */
+		if (map_y < 0 || map_y >= rows)
+			break;
+		size_t row_len = ft_strlen(game->map[map_y]);
+		if (map_x < 0 || (size_t)map_x >= row_len)
+			break;
+
+		/* actual map hit */
+		if (game->map[map_y][map_x] == '1')
+			break;
+		//printf("map_x=%d, map_y=%d\n", map_x,map_y);
+	}
+
+	/* compute perpendicular distance (use the DDA distances) */
+	double perp_dist = (side == 0) ? (side_dist_x - delta_dist_x) : (side_dist_y - delta_dist_y);
+	if (perp_dist < 1e-6) perp_dist = 1e-6; /* avoid div by zero */
+
+	/* recompute exact hit point */
+	double ray_x = player->x + perp_dist * cos_angle;
+	double ray_y = player->y + perp_dist * sin_angle;
+
+	/* choose texture using side & step */
+	t_texture *texture;
+	if (side == 0)
+		texture = (step_x > 0) ? &game->east : &game->west;
+	else
+		texture = (step_y > 0) ? &game->south : &game->north;
+
+	/* compute tex X */
+	double wall_hit = (side == 0) ? fmod(ray_y, BLOCK) : fmod(ray_x, BLOCK);
+	if (wall_hit < 0) wall_hit += BLOCK;
+	int tex_x = (int)((wall_hit / (double)BLOCK) * texture->width);
+	if (tex_x < 0) tex_x = 0;
+	if (tex_x >= texture->width) tex_x = texture->width - 1;
+
+	if (!DEBUG)
+	{
+		double height = (BLOCK / perp_dist) * (WIDTH / 2);
+		if (height < 1) height = 1;
+		int start_y = (HEIGHT - height) / 2;
+		int end_y = start_y + (int)height;
+		for (int y = start_y; y < end_y; ++y)
+		{
+			int tex_y = ((y - start_y) * texture->height) / (end_y - start_y);
+			if (tex_y < 0) tex_y = 0;
+			if (tex_y >= texture->height) tex_y = texture->height - 1;
+			int t_idx = tex_y * texture->size_line + tex_x * (texture->bpp / 8);
+
+			int color = 0xDADADA;
+			if (texture->bpp == 32)
+				color = *(int *)(texture->data + t_idx);
+			else if (texture->bpp == 24)
+			{
+				unsigned char *d = (unsigned char *)(texture->data + t_idx);
+				color = d[0] | (d[1] << 8) | (d[2] << 16);
+			}
+			put_pixel(i, y, color, game);
+			if (y < 0)
+				y = 0;
+		}
+	}
 }
 
 void put_pixel(int x, int y, int color, t_game *game)
 {
-    if(x >= WIDTH || y >= HEIGHT || x < 0 || y < 0)
+	if(y < 0 || x >= WIDTH || y >= HEIGHT || x < 0)
+	{
+		printf("%d\n", y);
+		return ;
+	}
+	int index = y * game->size_line + x * (game->bpp / 8);
+	game->data[index] = color & 0xFF;
+	game->data[index + 1] = (color >> 8) & 0xFF;
+	game->data[index + 2] = (color >> 16) & 0xFF;
+}
+
+void put_pixel_safe(int x, int y, int color, t_game *game)
+{
+    /* defensive: require valid game and image buffer */
+    if (!game || !game->data)
         return;
-    int index = y * game->size_line + x * game->bpp / 8;
-    game->data[index] = color & 0xFF;
-    game->data[index + 1] = (color >> 8) & 0xFF;
-    game->data[index + 2] = (color >> 16) & 0xFF;
+    if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT)
+        return;
+
+    int bytes_per_pixel = game->bpp / 8;
+    unsigned char *buf = (unsigned char *)game->data;
+    int index = y * game->size_line + x * bytes_per_pixel;
+
+    /* write safely according to bytes_per_pixel */
+    buf[index] = color & 0xFF;
+    if (bytes_per_pixel > 1) buf[index + 1] = (color >> 8) & 0xFF;
+    if (bytes_per_pixel > 2) buf[index + 2] = (color >> 16) & 0xFF;
+    if (bytes_per_pixel > 3) buf[index + 3] = (color >> 24) & 0xFF;
 }

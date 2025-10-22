@@ -20,7 +20,7 @@
 void	init_player(t_player *player);
 void	init_game(t_game *game);
 void	init_canvas(t_canvas *canvas);
-char	**get_map(char *map_name);
+char	**get_map(t_game *game, char *map_name);
 int		key_press(int keycode, t_game *game);
 int		key_release(int keycode, t_player *player);
 int	    game_loop(t_game *game);
@@ -34,8 +34,12 @@ double	fixed_dist(double x1, double y1, double x2, double y2, t_game *game);
 bool	touch(double px, double py, t_game *game);
 void	draw_line(t_player *player, t_game *game, double start_x, int i);
 void	move_wasd(t_game *game, double sin, double cos, int speed);
+void fill_background(t_game *game);
 
+void	set_floor_cealing(t_game *game, char *line, int i);
+void	set_background_color(t_game *game, t_color *bg, int i, char *line);
+void put_pixel_safe(int x, int y, int color, t_game *game);
 
-int	close_game(t_game *game);
+int	close_game(t_game *game, char *msg);
 
 #endif

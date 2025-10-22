@@ -25,13 +25,21 @@ typedef struct	s_canvas
 
 typedef struct s_texture {
     void *img;
+    char *data;
     int width;
     int height;
-    char *data;
     int bpp;
     int size_line;
     int endian;
+	char	*path;
 } t_texture;
+
+typedef struct s_color {
+    int red;
+    int blue;
+    int green;
+} t_color;
+
 
 typedef struct	s_game
 {
@@ -40,6 +48,8 @@ typedef struct	s_game
 	int			size_line;
 	int			endian;
 	char		**map;
+	t_color		floor;
+	t_color		cealing;
 	t_player	*player;
 	t_canvas	*canvas;
     t_texture 	north;
