@@ -16,13 +16,13 @@ void	draw_square(int x, int y, int size, int color, t_game *game)
 		put_pixel(x + i, y, color, game);
 	i = -1;
 	while (++i < size)
-		put_pixel(x, y + 1, color, game);
+		put_pixel(x + i, y + size - 1, color, game);
 	i = -1;
 	while (++i < size)
-		put_pixel(x + size, y + i, color, game);
+		put_pixel(x, y + i, color, game);
 	i = -1;
 	while (++i < size)
-		put_pixel(x + i, y + size, color, game);
+		put_pixel(x + size - 1, y + i, color, game);
 }
 
 void	draw_map(t_game *game)
@@ -89,6 +89,18 @@ bool	touch(double px, double py, t_game *game)
 	return (game->map[y][x] == '1');
 }
 
+static double	compute_perp_dist(double hit_x, double hit_y, t_player *player)
+{
+	double dx = hit_x - player->x;
+	double dy = hit_y - player->y;
+	double forward_x = cos(player->angle);
+	double forward_y = sin(player->angle);
+
+	double perp = dx * forward_x + dy * forward_y;
+	if (perp < 0) perp = -perp;
+	if (perp < 1e-6) perp = 1e-6;
+	return (perp);
+}
 
 // raycasting functions
 void	draw_line(t_player *player, t_game *game, double start_x, int i)
@@ -167,6 +179,10 @@ void	draw_line(t_player *player, t_game *game, double start_x, int i)
 	double ray_x = player->x + perp_dist * cos_angle;
 	double ray_y = player->y + perp_dist * sin_angle;
 
+	perp_dist = compute_perp_dist(ray_x, ray_y, player);
+
+	double proj_plane = (WIDTH / 2.0) / tan(FOV / 2.0);
+	
 	/* choose texture using side & step */
 	t_texture *texture;
 	if (side == 0)
@@ -183,16 +199,40 @@ void	draw_line(t_player *player, t_game *game, double start_x, int i)
 
 	if (!DEBUG)
 	{
-		double height = (BLOCK / perp_dist) * (WIDTH / 2);
-		if (height < 1) height = 1;
-		int start_y = (HEIGHT - height) / 2;
-		int end_y = start_y + (int)height;
-		for (int y = start_y; y < end_y; ++y)
+		double orig_height = (BLOCK / perp_dist) * proj_plane;
+		if (orig_height > HEIGHT) orig_height = HEIGHT;
+		if (orig_height < 1.0) orig_height = 1.0;
+
+		double orig_start_f = (HEIGHT - orig_height) / 2.0;
+		double orig_end_f = (orig_start_f + orig_height);
+		int draw_start = (int)orig_start_f;
+		int draw_end = (int)orig_end_f;
+		if (draw_start < 0) draw_start = 0;
+		if (draw_end > HEIGHT) draw_end = HEIGHT;
+
+		int draw_pixels = draw_end - draw_start;
+		if (draw_pixels <= 0)
+			return ;
+
+		double tex_step = (double)texture->height / orig_height;
+		double tex_pos = 0.0;
+		if (orig_start_f < 0.0) tex_pos = (-orig_start_f * tex_step);
+		else
+			tex_pos = 0.0;
+		tex_pos = (double)(draw_start) - orig_start_f;
+		tex_pos *= tex_step;
+
+		int tex_x_flipped = tex_x;
+		if ((side == 0 && cos_angle > 0.0) || (side == 1 && sin_angle < 0.0))
+			tex_x_flipped = texture->width - tex_x - 1;
+
+		for (int y = draw_start; y < draw_end; ++y)
 		{
-			int tex_y = ((y - start_y) * texture->height) / (end_y - start_y);
+			int tex_y = (int)(tex_pos);
 			if (tex_y < 0) tex_y = 0;
 			if (tex_y >= texture->height) tex_y = texture->height - 1;
-			int t_idx = tex_y * texture->size_line + tex_x * (texture->bpp / 8);
+
+			int t_idx = tex_y * texture->size_line + tex_x_flipped * (texture->bpp / 8);
 
 			int color = 0xDADADA;
 			if (texture->bpp == 32)
@@ -203,19 +243,17 @@ void	draw_line(t_player *player, t_game *game, double start_x, int i)
 				color = d[0] | (d[1] << 8) | (d[2] << 16);
 			}
 			put_pixel(i, y, color, game);
-			if (y < 0)
-				y = 0;
+			tex_pos += tex_step;
 		}
 	}
 }
 
 void put_pixel(int x, int y, int color, t_game *game)
 {
-	if(y < 0 || x >= WIDTH || y >= HEIGHT || x < 0)
-	{
-		printf("%d\n", y);
+	if (!game || !game->data)
+		return;
+	if (y < 0 || x >= WIDTH || y >= HEIGHT || x < 0)
 		return ;
-	}
 	int index = y * game->size_line + x * (game->bpp / 8);
 	game->data[index] = color & 0xFF;
 	game->data[index + 1] = (color >> 8) & 0xFF;

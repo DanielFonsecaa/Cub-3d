@@ -1,8 +1,11 @@
 #ifndef DECLARATIONS_H
 # define DECLARATIONS_H
 
+#include "cub.h"
+
 # define WIDTH 1280
 # define HEIGHT 720
+# define FOV (60.0 * M_PI / 180.0)
 # define BLOCK 64
 # define DEBUG 0
 # define WS " \t\n\r\v\f"
