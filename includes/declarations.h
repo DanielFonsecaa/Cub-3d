@@ -5,10 +5,11 @@
 
 # define WIDTH 1280
 # define HEIGHT 720
-# define FOV (60.0 * M_PI / 180.0)
+# define FOV (60.0 * PI / 180.0)
 # define BLOCK 64
 # define DEBUG 0
 # define WS " \t\n\r\v\f"
+# define VC "10NSWE"
 
 # define W 119
 # define A 97
@@ -16,8 +17,10 @@
 # define D 100
 # define LEFT 65361
 # define RIGHT 65363
-
 # define PI 3.14159265359
+
+# define EXTENSION ".cub"
+
 
 # define RED 0xFF0000
 # define GREEN 0x00FF00
@@ -31,4 +34,5 @@
 # define INVALID_TEXTURE "Error\nInvalid texture\n"
 # define MAP_INVALID "Error\nMap is invalid\n"
 # define NO_BG_COLOR "Error\nMap has no floor or cealing colors\n"
+# define TESTE "TESTE\n"
 #endif

@@ -2,9 +2,9 @@
 
 void	init_player(t_player *player)
 {
-	player->x = WIDTH / 6.0; //put the player in the center
-	player->y = HEIGHT / 7.0;
-	player->angle = PI / 16; //90 degrees facing
+/*	player->x = WIDTH / 6.0; //put the player in the center
+	player->y = HEIGHT / 7.0;*/
+/*	player->angle = PI / 3; //90 degrees facing*/
 	player->key_up = false;
 	player->key_down = false;
 	player->key_left = false;

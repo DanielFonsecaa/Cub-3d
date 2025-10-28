@@ -39,7 +39,14 @@ typedef struct s_color {
     int blue;
     int green;
 } t_color;
-
+/*
+typedef struct s_map {
+    char	**map;
+    char	*file_name;
+    int		height;
+    int		width;
+} t_map;
+*/
 
 typedef struct	s_game
 {
@@ -48,6 +55,7 @@ typedef struct	s_game
 	int			size_line;
 	int			endian;
 	char		**map;
+	int			colors_ready;
 	t_color		floor;
 	t_color		cealing;
 	t_player	*player;

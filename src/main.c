@@ -60,7 +60,7 @@ int	main(int argc, char **argv)
 	}
 	ft_bzero(&game, sizeof(t_game));
 	init_game(&game);
-	game.map = get_map(&game, argv[1]);
+	get_map(&game, argv[1]);
 	if (!game.map) { perror("get_map"); exit(1); }
 	loop(&game, game.player);
 	return (0);

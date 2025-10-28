@@ -89,7 +89,7 @@ bool	touch(double px, double py, t_game *game)
 	return (game->map[y][x] == '1');
 }
 
-static double	compute_perp_dist(double hit_x, double hit_y, t_player *player)
+/*static double	compute_perp_dist(double hit_x, double hit_y, t_player *player)
 {
 	double dx = hit_x - player->x;
 	double dy = hit_y - player->y;
@@ -100,7 +100,7 @@ static double	compute_perp_dist(double hit_x, double hit_y, t_player *player)
 	if (perp < 0) perp = -perp;
 	if (perp < 1e-6) perp = 1e-6;
 	return (perp);
-}
+}*/
 
 // raycasting functions
 void	draw_line(t_player *player, t_game *game, double start_x, int i)
@@ -123,16 +123,16 @@ void	draw_line(t_player *player, t_game *game, double start_x, int i)
 	double side_dist_x;
 	double side_dist_y;
 
-	/* distance from player to first vertical/horizontal gridline along the ray (same units as delta_dist) */
+	/* distance from player to first vertical/horizontal gridline along the ray */
 	if (step_x < 0)
-		side_dist_x = (player->x - map_x * BLOCK) / (fabs(cos_angle) < EPS ? 1.0 : fabs(cos_angle));
+		side_dist_x = (player->x - map_x * BLOCK) * delta_dist_x / (double)BLOCK;
 	else
-		side_dist_x = ((map_x + 1) * BLOCK - player->x) / (fabs(cos_angle) < EPS ? 1.0 : fabs(cos_angle));
+		side_dist_x = ((map_x + 1) * BLOCK - player->x) * delta_dist_x / (double)BLOCK;
 
 	if (step_y < 0)
-		side_dist_y = (player->y - map_y * BLOCK) / (fabs(sin_angle) < EPS ? 1.0 : fabs(sin_angle));
+		side_dist_y = (player->y - map_y * BLOCK) * delta_dist_y / (double)BLOCK;
 	else
-		side_dist_y = ((map_y + 1) * BLOCK - player->y) / (fabs(sin_angle) < EPS ? 1.0 : fabs(sin_angle));
+		side_dist_y = ((map_y + 1) * BLOCK - player->y) * delta_dist_y / (double)BLOCK;
 
 	int side = -1; /* 0 = vertical (x-side), 1 = horizontal (y-side) */
 
@@ -174,12 +174,15 @@ void	draw_line(t_player *player, t_game *game, double start_x, int i)
 	/* compute perpendicular distance (use the DDA distances) */
 	double perp_dist = (side == 0) ? (side_dist_x - delta_dist_x) : (side_dist_y - delta_dist_y);
 	if (perp_dist < 1e-6) perp_dist = 1e-6; /* avoid div by zero */
-
-	/* recompute exact hit point */
-	double ray_x = player->x + perp_dist * cos_angle;
-	double ray_y = player->y + perp_dist * sin_angle;
-
-	perp_dist = compute_perp_dist(ray_x, ray_y, player);
+	
+	/* compute exact hit point for texture mapping BEFORE fish-eye correction */
+	double uncorrected_dist = (side == 0) ? (side_dist_x - delta_dist_x) : (side_dist_y - delta_dist_y);
+	double hit_x = player->x + uncorrected_dist * cos_angle;
+	double hit_y = player->y + uncorrected_dist * sin_angle;
+	
+	/* apply fish-eye correction for wall height calculation */
+	double angle_diff = start_x - player->angle;
+	perp_dist = perp_dist * cos(angle_diff);
 
 	double proj_plane = (WIDTH / 2.0) / tan(FOV / 2.0);
 	
@@ -190,8 +193,14 @@ void	draw_line(t_player *player, t_game *game, double start_x, int i)
 	else
 		texture = (step_y > 0) ? &game->south : &game->north;
 
-	/* compute tex X */
-	double wall_hit = (side == 0) ? fmod(ray_y, BLOCK) : fmod(ray_x, BLOCK);
+	/* compute tex X using the uncorrected hit point */
+	double wall_hit;
+	if (side == 0) // vertical wall hit
+		wall_hit = hit_y;
+	else // horizontal wall hit  
+		wall_hit = hit_x;
+		
+	wall_hit = fmod(wall_hit, BLOCK);
 	if (wall_hit < 0) wall_hit += BLOCK;
 	int tex_x = (int)((wall_hit / (double)BLOCK) * texture->width);
 	if (tex_x < 0) tex_x = 0;
@@ -200,7 +209,7 @@ void	draw_line(t_player *player, t_game *game, double start_x, int i)
 	if (!DEBUG)
 	{
 		double orig_height = (BLOCK / perp_dist) * proj_plane;
-		if (orig_height > HEIGHT) orig_height = HEIGHT;
+		//if (orig_height > HEIGHT) orig_height = HEIGHT;
 		if (orig_height < 1.0) orig_height = 1.0;
 
 		double orig_start_f = (HEIGHT - orig_height) / 2.0;
@@ -215,16 +224,20 @@ void	draw_line(t_player *player, t_game *game, double start_x, int i)
 			return ;
 
 		double tex_step = (double)texture->height / orig_height;
-		double tex_pos = 0.0;
-		if (orig_start_f < 0.0) tex_pos = (-orig_start_f * tex_step);
-		else
-			tex_pos = 0.0;
-		tex_pos = (double)(draw_start) - orig_start_f;
-		tex_pos *= tex_step;
+		double tex_pos = (double)(draw_start - orig_start_f) * tex_step;
 
 		int tex_x_flipped = tex_x;
-		if ((side == 0 && cos_angle > 0.0) || (side == 1 && sin_angle < 0.0))
-			tex_x_flipped = texture->width - tex_x - 1;
+		// Flip texture based on which side we hit and ray direction
+		if (side == 0) // vertical wall (NS walls)
+		{
+			if (step_x < 0) // hitting from east, looking west
+				tex_x_flipped = texture->width - tex_x - 1;
+		}
+		else // horizontal wall (EW walls)  
+		{
+			if (step_y > 0) // hitting from north, looking south
+				tex_x_flipped = texture->width - tex_x - 1;
+		}
 
 		for (int y = draw_start; y < draw_end; ++y)
 		{
@@ -234,7 +247,7 @@ void	draw_line(t_player *player, t_game *game, double start_x, int i)
 
 			int t_idx = tex_y * texture->size_line + tex_x_flipped * (texture->bpp / 8);
 
-			int color = 0xDADADA;
+			int color = 0xFFFFFF;
 			if (texture->bpp == 32)
 				color = *(int *)(texture->data + t_idx);
 			else if (texture->bpp == 24)

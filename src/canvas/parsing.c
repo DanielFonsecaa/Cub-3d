@@ -57,7 +57,7 @@ void	validade_texture(t_game *game)
 {
 	if (!game->canvas || !game->canvas->mlx)
 	{
-		ft_printf("error: canvas or mlx not initialized\n");
+		ft_printf("Error\nCanvas or mlx not initialized\n");
 		close_game(game, INVALID_TEXTURE);
 	}
 
@@ -89,6 +89,49 @@ void	validade_texture(t_game *game)
 		close_game(game, INVALID_TEXTURE);
 }
 
+/*int	ft_check_map_name(char *file)
+{
+	char	*str;
+	char	*file_name;
+	int		len;
+
+	str = ft_strrchr(file, '.');
+	file_name = ft_strrchr(file, '/');
+	if (file_name)
+		len = ft_strlen(ft_strrchr(file, '/')) - 1;
+	else
+		len = ft_strlen(file);
+	if (!str || len < 5 || ft_strncmp(str, EXTENSION, ft_strlen(EXTENSION) + 1))
+		return (0);
+	return (1);
+}
+
+int	validade_map(t_game *game)
+{
+	int i;
+	int j;
+
+	if (!game->map)
+	{
+		ft_printf("Error\nMap not initialized\n");
+		close_game(game, MAP_INVALID);
+	}
+	i = -1;
+	
+	//if (!ft_check_map_name(file_name))
+	//	return (0);
+	if (game->map[0][0] != '1')
+	while (game->map[++i])
+	{
+		j = -1;
+		while (game->map[i][++j])
+		{
+			if (game)
+		}
+	}
+
+}*/
+
 void    get_textures(t_game *game, char *line)
 {
 	int		i;
@@ -110,9 +153,15 @@ void	set_floor_cealing(t_game *game, char *line, int i)
 	if (!line[i + 1])
 		return ;
 	if (ft_strncmp("F", line + i, 1) == 0)
+	{
 		set_background_color(game, &game->floor, i + 1, line);
+		game->colors_ready++;
+	}
 	else if (ft_strncmp("C", line + i, 1) == 0)
+	{
 		set_background_color(game, &game->cealing, i + 1, line);
+		game->colors_ready++;
+	}
 }
 
 void	set_background_color(t_game *game, t_color *bg, int i, char *line)
@@ -172,10 +221,61 @@ int get_lines_of_map(char *line, int *flag)
 	}
 
 	/* after map started accept lines that look like map rows ('0' or '1' or other map tokens) */
-	if (line[i] != '1' && line[i] != '0' && line[i] != ' ')
+	if (line[i] != '1' && line[i] != '0')
 		return (0); /* ignore malformed/extra lines */
-
 	return (1);
+}
+
+void	validate_cell(t_game *game, int column_pos, int row_pos, int *flag)
+{
+	char **map;
+
+	map = game->map;
+	if (ft_strchr("NWES", map[column_pos][row_pos]))
+	{
+		if (*flag)
+			close_game(game, "Error\nDuplicate player position\n");
+		game->player->x = row_pos * BLOCK + BLOCK / 2;
+		game->player->y = column_pos * BLOCK + BLOCK / 2;
+		if (map[column_pos][row_pos] == 'S')
+			game->player->angle = PI / 2;
+		if (map[column_pos][row_pos] == 'N')
+			game->player->angle = PI * 1.5;
+		if (map[column_pos][row_pos] == 'E')
+			game->player->angle = PI * 2;
+		if (map[column_pos][row_pos] == 'W')
+			game->player->angle = PI;
+		*flag = 1;
+		return ;
+	}
+	if (column_pos == 0 || !map[column_pos - 1] || ft_strchr(WS, map[column_pos - 1][row_pos]) || row_pos >= (int)ft_strlen(map[column_pos - 1]))
+		close_game(game, "1");
+	if (row_pos >= (int)ft_strlen(map[column_pos + 1]) || !map[column_pos + 1] || ft_strchr(WS, map[column_pos + 1][row_pos]))
+		close_game(game, "2");
+	if (row_pos == 0 || !map[column_pos] || ft_strchr(WS, map[column_pos][row_pos - 1]))
+		close_game(game, "3");
+	if (row_pos + 1 >= (int)ft_strlen(map[column_pos]) || !map[column_pos] || ft_strchr(WS, map[column_pos][row_pos + 1]))
+		close_game(game, "4");
+}
+
+int	validate_map(t_game *game, int height)
+{
+	int	x;
+	int	y;
+	int	flag;
+
+	y = -1;
+	flag = 0;
+	while (++y < height)
+	{
+		x = -1;
+		while (++x < (int)ft_strlen(game->map[y]))
+		{
+			if (game->map[y][x] == '0' || ft_strchr("NWES", game->map[y][x]))
+				validate_cell(game, y, x, &flag);
+		}
+	}
+	return (0);
 }
 
 char	**get_map(t_game *game, char *map_name)
@@ -187,8 +287,6 @@ char	**get_map(t_game *game, char *map_name)
 	int     map_lines;
 	int		flag;
 
-	count = 0;
-	flag = 0;
 	map_lines = get_map_lines(map_name);
 	if (map_lines <= 0)
 		return (NULL);
@@ -203,20 +301,21 @@ char	**get_map(t_game *game, char *map_name)
 		free(map);
 		return (NULL);
 	}
+	count = 0;
+	int i = 0;
 	while ((line = get_next_line(fd)) != NULL)
 	{
+		while (ft_iswhite_space(line[i]))
+			i++;
+		if (game->colors_ready == 2 && line[i] == '1' && line[i + 1] == '1' && line[i + 2] == '1')
+		{
+			map[count++] = line;
+			break ;
+		}
 		get_textures(game, line);
 		free(line);
 	}
-	close(fd);
-
-	fd = open(map_name, O_RDONLY);
-	if (fd < 0)
-	{
-		/* cleanup any allocated strings if necessary */
-		free(map);
-		return (NULL);
-	}
+	flag = 0;
 	while ((line = get_next_line(fd)) != NULL)
 	{
 		if (!get_lines_of_map(line, &flag))
@@ -228,8 +327,12 @@ char	**get_map(t_game *game, char *map_name)
 	}
 	close(fd);
 	/* null-terminate the array */
-	map[count] = NULL;
+	/*its ft_calloc. Do not need I guess*/
+	//map[count] = NULL;
 	validade_texture(game);
+//	validate_map(game);
+	game->map = map;
+	validate_map(game, count);
 	return (map);
 }
 
