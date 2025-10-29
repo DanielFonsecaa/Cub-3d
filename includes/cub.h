@@ -20,7 +20,7 @@
 void	init_player(t_player *player);
 void	init_game(t_game *game);
 void	init_canvas(t_canvas *canvas);
-char	**get_map(t_game *game, char *map_name);
+void	get_map(t_game *game, char *map_name);
 int		key_press(int keycode, t_game *game);
 int		key_release(int keycode, t_player *player);
 int	    game_loop(t_game *game);

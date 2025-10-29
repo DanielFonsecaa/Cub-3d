@@ -89,19 +89,6 @@ bool	touch(double px, double py, t_game *game)
 	return (game->map[y][x] == '1');
 }
 
-/*static double	compute_perp_dist(double hit_x, double hit_y, t_player *player)
-{
-	double dx = hit_x - player->x;
-	double dy = hit_y - player->y;
-	double forward_x = cos(player->angle);
-	double forward_y = sin(player->angle);
-
-	double perp = dx * forward_x + dy * forward_y;
-	if (perp < 0) perp = -perp;
-	if (perp < 1e-6) perp = 1e-6;
-	return (perp);
-}*/
-
 // raycasting functions
 void	draw_line(t_player *player, t_game *game, double start_x, int i)
 {

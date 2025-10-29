@@ -8,9 +8,12 @@ void	init_game(t_game *game)
     game->canvas = malloc(sizeof(*game->canvas));
     if (!game->canvas) { perror("malloc canvas"); exit(1); }
 
+    // Initialize canvas pointers to NULL for safe cleanup
+    game->canvas->mlx = NULL;
+    game->canvas->win = NULL;
+    game->canvas->img = NULL;
+
     init_player(game->player);
-    init_canvas(game->canvas);
-	fill_background(game);
 }
 
 int	game_loop(t_game *game)

@@ -55,7 +55,9 @@ typedef struct	s_game
 	int			size_line;
 	int			endian;
 	char		**map;
-	int			colors_ready;
+	int			assets_ready;
+	int			floor_set;    // Flag to track if floor color is set
+	int			ceiling_set;  // Flag to track if ceiling color is set
 	t_color		floor;
 	t_color		cealing;
 	t_player	*player;
