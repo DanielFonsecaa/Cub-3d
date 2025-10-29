@@ -1,7 +1,7 @@
 #ifndef DECLARATIONS_H
 # define DECLARATIONS_H
 
-#include "cub.h"
+# include "cub.h"
 
 # define WIDTH 1280
 # define HEIGHT 720
@@ -19,7 +19,7 @@
 # define RIGHT 65363
 # define PI 3.14159265359
 
-# define EXTENSION ".cub"
+# define EXT ".cub"
 
 # define RED 0xFF0000
 # define GREEN 0x00FF00

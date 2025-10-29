@@ -2,6 +2,8 @@
   "files.associations": {
     "structs.h": "c",
     "cub.h": "c",
-    "errno.h": "c"
+    "errno.h": "c",
+    "stdbool.h": "c",
+    "declarations.h": "c"
   }
 }

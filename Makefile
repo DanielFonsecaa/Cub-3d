@@ -32,10 +32,7 @@ BUILD_PATH		= .build
 
 
 FILES			=	main.c \
-					canvas/canvas.c \
-					canvas/parsing.c \
-					game.c \
-					player.c
+					parsing/map.c
 
 SRC						= $(addprefix $(SRC_PATH)/, $(FILES))
 OBJS					= $(SRC:$(SRC_PATH)/%.c=$(BUILD_PATH)/%.o)
