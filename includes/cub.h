@@ -48,5 +48,14 @@ int		close_game(t_game *game, char *msg);
 void	close_canvas(t_game *game);
 void	close_textures(t_game *game);
 
+//player
+int		key_press(int keycode, t_game *game);
+int		key_release(int keycode, t_player *player);
+void	move_player(t_game *game);
+void	move_wasd(t_game *game, double sin, double cos);
+void	go_up(t_game *game, double sin, double cos);
+void	go_down(t_game *game, double sin, double cos);
+void	go_left(t_game *game, double sin, double cos);
+void	go_right(t_game *game, double sin, double cos);
 
 #endif

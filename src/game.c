@@ -1,2 +1,107 @@
 #include "../includes/cub.h"
 
+void	start(t_game *game)
+{
+	game->player.speed = 2;
+	game->player.angle_speed = 0.03;
+	init_textures(game);
+	game->canvas.mlx = mlx_init();
+	game->canvas.win = mlx_new_window(game->canvas.mlx, WIDTH, HEIGHT, "cub3d");
+	game->canvas.img = mlx_new_image(game->canvas.mlx, WIDTH, HEIGHT);
+	if (!game->canvas.img)
+		close_game(game, INVALID_TEXTURE);
+	game->data = mlx_get_data_addr(game->canvas.img, &game->bpp,
+					&game->size_line, &game->endian);
+	if (!game->data)
+		close_game(game, INVALID_TEXTURE);
+	mlx_hook(game->canvas.win, 2, 1L << 0, key_press, game);
+	mlx_hook(game->canvas.win, 3, 1L << 1, key_release, &game->player);
+	mlx_loop_hook(game->canvas.mlx, game_loop, game);
+	mlx_hook(game->canvas.win, DestroyNotify, 0, close_and_printf, game);
+	mlx_loop(game->canvas.mlx);
+}
+
+void	game_loop(t_game *game)
+{
+	t_player	player;
+	double		fraction;
+	double		start_x;
+	int			i;
+
+	player = game->player;
+	move_player(game);
+	fill_background(game);
+/* 	if (DEBUG)
+	{
+		draw_square((int)player->x, (int)player->y, 10, GREEN, game); //todo
+		draw_map(game); //todo
+	} */
+	fraction = PI / 3 / WIDTH;
+	start_x = player.angle - PI / 6;
+	i = 0;
+	while (i < WIDTH)
+	{
+		draw_line(player, game, start_x, i); //todo
+		start_x += fraction;
+		i++;
+	}
+	mlx_put_image_to_window(game->canvas.mlx, game->canvas.win,
+		game->canvas.img, 0 , 0);
+}
+
+void	fill_background(t_game *game)
+{
+	int	x;
+	int	y;
+	int	half;
+	int	roof_color;
+	int	floor_color;
+	
+	roof_color = (game->cealing.blue) | (game->cealing.green << 8)
+		| (game->cealing.red << 16);
+	floor_color = (game->floor.blue) | (game->floor.green << 8)
+		| (game->floor.red << 16);
+	y = -1;
+	half = HEIGHT / 2;
+	while (++y < half)
+	{
+		x = -1;
+		while (++x < WIDTH)
+			put_pixel_safe(x, y, roof_color, game);
+	}
+	y = half;
+	while (++y < HEIGHT)
+	{
+		x = -1;
+		while (++x < WIDTH)
+			put_pixel_safe(x, y, floor_color, game);
+	}
+}
+
+void	init_textures(t_game *g)
+{
+	g->north.img = mlx_xpm_file_to_image(g->canvas.mlx, g->north.path,
+						&g->north.width, &g->north.height);
+	if (!g->north.img)
+		close_game(g, "Error\nMlx failed to load north\n");
+	g->north.data = mlx_get_data_addr(g->north.img, &g->north.bpp,
+						&g->north.size_line, &g->north.endian);
+	g->south.img = mlx_xpm_file_to_image(g->canvas.mlx, g->south.path,
+						&g->south.width, &g->south.height);
+	if (!g->south.img)
+		close_game(g, "Error\nMlx failed to load south\n");
+	g->south.data = mlx_get_data_addr(g->south.img, &g->south.bpp,
+						&g->south.size_line, &g->south.endian);
+	g->west.img = mlx_xpm_file_to_image(g->canvas.mlx, g->west.path,
+						&g->west.width, &g->west.height);
+	if (!g->west.img)
+		close_game(g, "Error\nMlx failed to load west\n");
+	g->west.data = mlx_get_data_addr(g->west.img, &g->west.bpp,
+						&g->west.size_line, &g->west.endian);
+	g->east.img = mlx_xpm_file_to_image(g->canvas.mlx, g->east.path,
+						&g->east.width, &g->east.height);
+	if (!g->east.img)
+		close_game(g, "Error\nMlx failed to load east\n");
+	g->east.data = mlx_get_data_addr(g->east.img, &g->east.bpp,
+						&g->east.size_line, &g->east.endian);
+}

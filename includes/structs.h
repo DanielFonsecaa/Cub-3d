@@ -9,6 +9,8 @@ typedef struct	s_player
 	double		x;
 	double		y;
 	double		angle;
+	double		angle_speed;
+	int			speed;
 
 	bool		key_up;
 	bool		key_down;

@@ -26,7 +26,7 @@ static void print_string_array(const char *name, char **arr)
 
     printf("  %s:\n", name);
     for (size_t i = 0; arr[i] != NULL; ++i) {
-        printf("    [%zu] \"%s\"\n", i, arr[i]);
+        printf("    [%zu] %s", i, arr[i]);
     }
 }
 
@@ -162,7 +162,7 @@ void some_debug_function(t_game *game)
 {
 	dbg_print_separator("GAME STATE");
 	dbg_print_game(game);
-} 
+}
 
 int	main(int argc, char **argv)
 {
