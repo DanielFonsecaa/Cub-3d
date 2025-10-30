@@ -1,22 +1,5 @@
 #include "../../includes/cub.h"
 
-void	valid_name(t_game *game, t_mapi *map, char *map_name)
-{
-	char	*str;
-	char	*file_name;
-	int		len;
-
-	map->file_name = map_name;
-	str = ft_strrchr(map_name, '.');
-	file_name = ft_strrchr(map_name, '/');
-	if (file_name)
-		len = ft_strlen(ft_strrchr(map_name, '/')) - 1;
-	else
-		len = ft_strlen(map_name);
-	if (!str || len < 5 || ft_strncmp(str, EXT, ft_strlen(EXT) + 1))
-		close_game(game, INVALID_MAP_NAME);
-}
-
 int	get_number_lines_map(t_mapi *map)
 {
 	int		num_lines;
@@ -51,31 +34,25 @@ void	skip_file_lines(t_mapi *map)
 	}
 }
 
-void	validate_map(t_game *game)
+void	set_player(t_game *game, int column_pos, int row_pos, int *flag)
 {
-	int	x;
-	int	y;
-	int	flag;
+	char	**map;
 
-	y = -1;
-	flag = 0;
-	while (++y < game->grid.height)
-	{
-		x = -1;
-		while (++x < (int)ft_strlen(game->grid.map[y]))
-		{
-			if (game->grid.map[y][x] == '1' || ft_iswhite_space(game->grid.map[y][x]))
-				continue ;
-			if (game->grid.map[y][x] == '0' || ft_strchr("NWES", game->grid.map[y][x]))
-				validate_cell(game, y, x, &flag);
-			else
-				close_game(game, INVALID_CHAR_AT_MAP);
-		}
-	}
-	if (game->grid.height == 0)
-		close_game(game, MAP_NOT_SET);
-	if (!flag)
-		close_game(game, NO_PLAYER);
+	map = game->grid.map;
+	if (*flag)
+			close_game(game, "Error\nDuplicate player position\n");
+		game->player.x = row_pos * BLOCK + BLOCK / 2;
+		game->player.y = column_pos * BLOCK + BLOCK / 2;
+		if (map[column_pos][row_pos] == 'S')
+			game->player.angle = PI / 2;
+		if (map[column_pos][row_pos] == 'N')
+			game->player.angle = PI * 1.5;
+		if (map[column_pos][row_pos] == 'E')
+			game->player.angle = PI * 2;
+		if (map[column_pos][row_pos] == 'W')
+			game->player.angle = PI;
+		*flag = 1;
+		return ;
 }
 
 int	find_valid_line(char *line)

@@ -37,21 +37,6 @@ void	get_map(t_game *game, char *map_name)
 	validate(game, &flag);
 }
 
-void	validate(t_game *game, int *invalid_map)
-{
-	if (*invalid_map)
-		close_game(game, MAP_INVALID);
-	if (!game->north.path)
-		close_game(game, NORTH_TEXT_ERR);
-	if (!game->south.path)
-		close_game(game, SOUTH_TEXT_ERR);
-	if (!game->east.path)
-		close_game(game, EAST_TEXT_ERR);
-	if (!game->west.path)
-		close_game(game, WEST_TEXT_ERR);
-	validate_map(game);
-}
-
 void	handle_assets(t_game *game, t_mapi *map)
 {
 	char	*line;

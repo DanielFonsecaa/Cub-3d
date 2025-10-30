@@ -20,8 +20,6 @@
 //parsing
 void	parsing(t_game *game, char *map_name);
 void	get_map(t_game *game, char *map_name);
-void	validate(t_game *game, int *invalid_map);
-void	validate_map(t_game *game);
 void	fill_map(t_mapi *map, int *flag);
 
 //assets
@@ -34,17 +32,21 @@ void	set_background_color(t_game *game, t_color *bg, int i, char *line);
 
 //validade
 void	validate_cell(t_game *game, int column_pos, int row_pos, int *flag);
-
+void	valid_name(t_game *game, t_mapi *map, char *map_name);
+void	validate(t_game *game, int *invalid_map);
+void	validate_map(t_game *game);
 
 //utils
-void	valid_name(t_game *game, t_mapi *map, char *map_name);
 void	skip_file_lines(t_mapi *map);
 int		get_number_lines_map(t_mapi *map);
 int		find_valid_line(char *line);
+void	set_player(t_game *game, int column_pos, int row_pos, int *flag);
 
 //close
 int		close_and_printf(t_game *game);
 int		close_game(t_game *game, char *msg);
+void	close_canvas(t_game *game);
+void	close_textures(t_game *game);
 
 
 #endif

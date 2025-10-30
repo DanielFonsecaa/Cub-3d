@@ -96,6 +96,9 @@ void dbg_print_player(const char *name, t_player *p)
         return;
     }
     printf("%s: (player struct at %p) -- implement dbg_print_player() to show fields\n", name, (void*)p);
+    printf("x: %.5f\n", p->x);
+    printf("y: %.5f\n", p->y);
+    printf("angle: %.5f\n", p->angle);
 }
 
 void dbg_print_canvas(const char *name, t_canvas *c)
@@ -161,48 +164,6 @@ void some_debug_function(t_game *game)
 	dbg_print_game(game);
 } 
 
-int	close_game(t_game *game, char *msg)
-{
-	some_debug_function(game);
-	if (game->north.path)
-		free(game->north.path);
-	if (game->south.path)
-		free(game->south.path);
-	if (game->west.path)
-		free(game->west.path);
-	if (game->east.path)
-		free(game->east.path);
-	/*if (game->player)
-		free(game->player);
-	if (game->canvas)
-	{
-		if (game->north.img)
-			mlx_destroy_image(game->canvas->mlx, game->north.img);
-		if (game->south.img)
-			mlx_destroy_image(game->canvas->mlx, game->south.img);
-		if (game->west.img)
-			mlx_destroy_image(game->canvas->mlx, game->west.img);
-		if (game->east.img)
-some_debug_function(&game)		{
-			mlx_destroy_display(game->canvas->mlx);
-			free(game->canvas->mlx);
-		}
-		free(game->canvas);
-	}*/
-	if (game->map)
-	{
-		int i = 0;
-		while (game->map[i])
-			free(game->map[i++]);
-		free(game->map);
-	}
-	if (!msg)
-		msg = CLOSE_GAME;
-	ft_printf(msg);
-	exit(0);
-	return (0);
-}
-
 int	main(int argc, char **argv)
 {
 	t_game	game;
@@ -214,15 +175,12 @@ int	main(int argc, char **argv)
 	}
 	ft_bzero(&game, sizeof(t_game));
 	parsing(&game, argv[1]);
-	//some_debug_function(&game);
-	/*
+	some_debug_function(&game);
 	if (!game.map)
 	{
 		perror("get_map");
 		exit(1);
 	}
-	loop(&game, game.player);
-	*/
-
+	//loop(&game, game.player);
 	return (0);
 }
