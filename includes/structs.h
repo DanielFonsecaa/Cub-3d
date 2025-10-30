@@ -74,7 +74,7 @@ typedef struct s_ray
 	double		side_dist_y;
 	int			side;
 	int			iter;
-	int			row;
+	int			rows;
 	size_t		row_len;
 	double		perp_dist;
 	double		uncorredted_dist;
@@ -117,6 +117,7 @@ typedef struct	s_game
 	t_texture	east;
 	t_texture	west;
 	t_mapi		grid;
+	t_ray		ray;
 }	t_game;
 
 #endif

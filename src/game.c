@@ -41,7 +41,7 @@ void	game_loop(t_game *game)
 	i = 0;
 	while (i < WIDTH)
 	{
-		draw_line(player, game, start_x, i); //todo
+		draw_line(game->player, game, start_x, i); //todo
 		start_x += fraction;
 		i++;
 	}

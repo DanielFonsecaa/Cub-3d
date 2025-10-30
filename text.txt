@@ -1,23 +1,4 @@
-Quick summary
-bpp — bits per pixel. How many bits (usually 24 or 32) are used for each pixel.
-size_line — number of bytes in a single row (scanline) of the image buffer (also called stride). It may be larger than WIDTH * bytes_per_pixel because of padding.
-endian — byte order used for multi-byte pixel values (0 = little-endian, 1 = big-endian). It tells you how the bytes of a 24/32-bit pixel are laid out in memory.
-More detail
-bpp (bits per pixel)
-
-Returned by mlx_get_data_addr as an int (e.g. 24 or 32).
-Bytes per pixel = bpp / 8. For 24 bpp that's 3 bytes/pixel (RGB), for 32 bpp that's 4 bytes/pixel (RGBA or RGB + unused byte).
-If you do integer writes (write a 32-bit int at once) you typically want bpp == 32 and to write with an int* cast.
-size_line (line length / stride)
-
-Number of bytes between the start of row y and the start of row y+1 in data.
-Use y * size_line + x * (bpp/8) to compute the byte offset for pixel (x,y).
-Because of alignment/padding, size_line can be larger than width * bytes_per_pixel. Always use size_line rather than recomputing width*bytes_per_pixel.
-endian (byte order)
-
-Indicates how multi-byte pixel values are stored in memory.
-Common mapping used by MinilibX: 0 for little-endian machines (x86/x86_64), 1 for big-endian.
-Example: color value 0x00RRGGBB (an int) will appear in memory as:
-little-endian: bytes = BB GG RR 00
-big-endian: bytes = 00 RR GG BB
-So when writing bytes manually you must swap the order if endian == 1.
+To do 
+ficheiros sem permissao -> verificar abertura
+ficheiros vazios/pastas
+ficheiros ocultos

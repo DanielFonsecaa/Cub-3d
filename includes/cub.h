@@ -58,4 +58,9 @@ void	go_down(t_game *game, double sin, double cos);
 void	go_left(t_game *game, double sin, double cos);
 void	go_right(t_game *game, double sin, double cos);
 
+//rendering
+void	draw_line(t_player *player, t_game *game, double start_x, int i);
+void	init_starting_values(t_player *player, t_game *game, double start_x);
+void	dda_loop(t_game *game, t_ray *ray);
+
 #endif
