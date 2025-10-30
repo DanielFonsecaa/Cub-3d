@@ -13,6 +13,7 @@ void	parsing(t_game *game, char *map_name)
 void	get_map(t_game *game, char *map_name)
 {
 	t_mapi	map;
+	char	**grid;
 	int		map_lines;
 	int		flag;
 
@@ -23,25 +24,23 @@ void	get_map(t_game *game, char *map_name)
 		return ;
 	map.fd = open(map_name, O_RDONLY);
 	if (map.fd < 0)
-	{
-		free(map);
 		return ;
-	}
 	handle_assets(game, &map);
-	map = ft_calloc((map_lines -map.skip_lines + 1), sizeof(char *));
-	if (!map)
+	grid = ft_calloc((map_lines - map.skip_lines + 1), sizeof(char *));
+	if (!grid)
 		return ;
 	map.fd = open(map_name, O_RDONLY);
-	fill_map(game, &map, &flag);
-	close(map.fd);
-	validate(game, map);
+	map.map = grid;
 	game->grid = map;
+	fill_map(&game->grid, &flag);
+	close(map.fd);
+	validate(game, &flag);
 }
 
-void	validate(t_game *game, t_mapi *map, int *invalid_map)
+void	validate(t_game *game, int *invalid_map)
 {
 	if (*invalid_map)
-		close_game(game, MAP_INVALID); //todo
+		close_game(game, MAP_INVALID);
 	if (!game->north.path)
 		close_game(game, NORTH_TEXT_ERR);
 	if (!game->south.path)
@@ -50,42 +49,13 @@ void	validate(t_game *game, t_mapi *map, int *invalid_map)
 		close_game(game, EAST_TEXT_ERR);
 	if (!game->west.path)
 		close_game(game, WEST_TEXT_ERR);
-	validate_map(game, map);
-}
-
-void	fill_map(t_game *game, t_mapi *map, int *flag)
-{
-	char	*line;
-	int		heigth;
-
-	skip_file_lines(map); //check if skiped the 1 line later
-	heigth = 0;
-	while ((line = get_next_line(map->fd)) != NULL)
-	{
-		if (!get_lines_of_map(line)) // todo
-		{
-			free(line);
-			break ;
-		}
-		map[heigth++] = line;
-	}
-	while ((line = get_next_line(map->fd)) != NULL)
-	{
-		if (get_lines_of_map(line))
-		{
-			free(line);
-			*flag = 1;
-			break ;
-		}
-		free(line);
-	}
-	map->height = heigth;
+	validate_map(game);
 }
 
 void	handle_assets(t_game *game, t_mapi *map)
 {
 	char	*line;
-
+	int		i;
 	line = NULL;
 	while (game->assets_ready < 6)
 	{
@@ -95,17 +65,46 @@ void	handle_assets(t_game *game, t_mapi *map)
 			close_game(game, MISSING_ASSETS);
 		while (ft_iswhite_space(line[i]))
 			i++;
-		get_textures(game, line); //todo
+		get_textures(game, line);
 		free(line);
 		map->skip_lines++;
 	}
 	while ((line = get_next_line(map->fd)) != NULL)
 	{
-		if (get_lines_of_map(line))
+		if (find_valid_line(line))
 			break ;
 		free(line);
 		map->skip_lines++;
 	}
 	map->skip_lines--;
-	close(map->fd)
+	close(map->fd);
+}
+
+void	fill_map(t_mapi *map, int *flag)
+{
+	char	*line;
+	int		heigth;
+
+	skip_file_lines(map); //check if skiped the 1 line later
+	heigth = 0;
+	while ((line = get_next_line(map->fd)) != NULL)
+	{
+		if (!find_valid_line(line))
+		{
+			free(line);
+			break ;
+		}
+		map->map[heigth++] = line;
+	}
+	while ((line = get_next_line(map->fd)) != NULL)
+	{
+		if (find_valid_line(line))
+		{
+			free(line);
+			*flag = 1;
+			break ;
+		}
+		free(line);
+	}
+	map->height = heigth;
 }

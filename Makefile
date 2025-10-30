@@ -32,7 +32,11 @@ BUILD_PATH		= .build
 
 
 FILES			=	main.c \
-					parsing/map.c
+					parsing/assets.c \
+					parsing/map.c \
+					parsing/map_utils.c \
+					parsing/validate.c \
+					free.c
 
 SRC						= $(addprefix $(SRC_PATH)/, $(FILES))
 OBJS					= $(SRC:$(SRC_PATH)/%.c=$(BUILD_PATH)/%.o)
