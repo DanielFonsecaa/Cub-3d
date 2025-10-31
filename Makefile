@@ -36,11 +36,16 @@ FILES			=	main.c \
 					parsing/map.c \
 					parsing/map_utils.c \
 					parsing/validate.c \
-					free.c
+					raycast/draw.c \
+					raycast/rendering.c \
+					free.c \
+					game.c \
+					movement.c \
+					player.c
 
 SRC						= $(addprefix $(SRC_PATH)/, $(FILES))
 OBJS					= $(SRC:$(SRC_PATH)/%.c=$(BUILD_PATH)/%.o)
-HEADERS				= $(INC_PATH)/cub.h
+HEADERS					= $(INC_PATH)/cub.h
 
 #BONUS_FILES	= main_bonus.c
 

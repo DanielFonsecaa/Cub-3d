@@ -40,34 +40,32 @@ void	set_player(t_game *game, int column_pos, int row_pos, int *flag)
 
 	map = game->grid.map;
 	if (*flag)
-			close_game(game, "Error\nDuplicate player position\n");
-		game->player.x = row_pos * BLOCK + BLOCK / 2;
-		game->player.y = column_pos * BLOCK + BLOCK / 2;
-		if (map[column_pos][row_pos] == 'S')
-			game->player.angle = PI / 2;
-		if (map[column_pos][row_pos] == 'N')
-			game->player.angle = PI * 1.5;
-		if (map[column_pos][row_pos] == 'E')
-			game->player.angle = PI * 2;
-		if (map[column_pos][row_pos] == 'W')
-			game->player.angle = PI;
-		*flag = 1;
-		return ;
+		close_game(game, "Error\nDuplicate player position\n");
+	game->player.x = row_pos * BLOCK + BLOCK / 2;
+	game->player.y = column_pos * BLOCK + BLOCK / 2;
+	if (map[column_pos][row_pos] == 'S')
+		game->player.angle = PI / 2;
+	if (map[column_pos][row_pos] == 'N')
+		game->player.angle = PI * 1.5;
+	if (map[column_pos][row_pos] == 'E')
+		game->player.angle = PI * 2;
+	if (map[column_pos][row_pos] == 'W')
+		game->player.angle = PI;
+	*flag = 1;
+	return ;
 }
 
 int	find_valid_line(char *line)
 {
-	int i;
+	int	i;
 
 	if (!line)
 		return (0);
 	i = 0;
 	while (ft_iswhite_space(line[i]))
 		i++;
-
 	if (line[i] == '\0')
 		return (0);
-
 	if (!ft_isascii(line[i]) && !ft_iswhite_space(line[i]))
 		return (0);
 	return (1);

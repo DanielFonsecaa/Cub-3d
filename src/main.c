@@ -1,4 +1,5 @@
 #include "../includes/cub.h"
+
  
 #include <stdio.h>
 #include <stdint.h>
@@ -176,7 +177,7 @@ int	main(int argc, char **argv)
 	ft_bzero(&game, sizeof(t_game));
 	parsing(&game, argv[1]);
 	some_debug_function(&game);
-	if (!game.map)
+	if (!game.grid.map)
 	{
 		perror("get_map");
 		exit(1);

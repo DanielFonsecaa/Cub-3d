@@ -28,9 +28,11 @@ void	validate_map(t_game *game)
 		x = -1;
 		while (++x < (int)ft_strlen(game->grid.map[y]))
 		{
-			if (game->grid.map[y][x] == '1' || ft_iswhite_space(game->grid.map[y][x]))
+			if (game->grid.map[y][x] == '1'
+				|| ft_iswhite_space(game->grid.map[y][x]))
 				continue ;
-			if (game->grid.map[y][x] == '0' || ft_strchr("NWES", game->grid.map[y][x]))
+			if (game->grid.map[y][x] == '0'
+				|| ft_strchr("NWES", game->grid.map[y][x]))
 				validate_cell(game, y, x, &flag);
 			else
 				close_game(game, INVALID_CHAR_AT_MAP);

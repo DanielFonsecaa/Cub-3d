@@ -1,27 +1,32 @@
 #include "../includes/cub.h"
 
-void	move_wasd(t_game *game, double sin, double cos)
+bool	touch(double px, double py, t_game *game)
 {
-	double new_cos;
-	double new_sin;
+	int		x;
+	int		y;
+	int		rows;
+	size_t	row_len;
 
-	new_cos = cos * game->player.speed;
-	new_sin = sin * game->player.speed;
-	if (game->player.key_up)
-		go_up(game, new_sin, new_cos);
-	if (game->player.key_down)
-		go_down(game, (new_sin * - 1), (new_cos * - 1));
-	if (game->player.key_left)
-		go_left(game, sin, (new_cos * - 1));
-	if (game->player.key_right)
-		go_right(game, (new_sin * - 1), new_cos);
+	if (!game || !game->map)
+		return (true);
+	x = (int)(px / BLOCK);
+	y = (int)(py / BLOCK);
+	rows = 0;
+	while (game->map[rows])
+		rows++;
+	if (y < 0 || y >= rows)
+		return (true);
+	row_len = ft_strlen(game->map[y]);
+	if (x < 0 || (size_t)x >= row_len)
+		return (true);
+	return (game->map[y][x] == '1');
 }
 
 void	go_up(t_game *game, double sin, double cos)
 {
-	double next_x;
-	double next_y;
-	double radius;
+	double	next_x;
+	double	next_y;
+	double	radius;
 
 	next_x = game->player.x + cos;
 	if (cos > 0)
@@ -41,9 +46,9 @@ void	go_up(t_game *game, double sin, double cos)
 
 void	go_down(t_game *game, double sin, double cos)
 {
-	double next_x;
-	double next_y;
-	double radius;
+	double	next_x;
+	double	next_y;
+	double	radius;
 
 	next_x = game->player.x + cos;
 	if (cos > 0)
@@ -63,9 +68,9 @@ void	go_down(t_game *game, double sin, double cos)
 
 void	go_left(t_game *game, double sin, double cos)
 {
-	double next_x;
-	double next_y;
-	double radius;
+	double	next_x;
+	double	next_y;
+	double	radius;
 
 	next_x = game->player.x + sin;
 	if (sin > 0)
@@ -85,9 +90,9 @@ void	go_left(t_game *game, double sin, double cos)
 
 void	go_right(t_game *game, double sin, double cos)
 {
-	double next_x;
-	double next_y;
-	double radius;
+	double	next_x;
+	double	next_y;
+	double	radius;
 
 	next_x = game->player.x + sin;
 	if (sin > 0)

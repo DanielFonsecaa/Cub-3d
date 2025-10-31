@@ -1,9 +1,4 @@
 #include "../../includes/cub.h"
-/*
-	char	**map;
-	char	*file_name;
-	int		height;
-	int		fd;*/
 
 void	parsing(t_game *game, char *map_name)
 {
@@ -41,6 +36,7 @@ void	handle_assets(t_game *game, t_mapi *map)
 {
 	char	*line;
 	int		i;
+
 	line = NULL;
 	while (game->assets_ready < 6)
 	{
@@ -70,7 +66,7 @@ void	fill_map(t_mapi *map, int *flag)
 	char	*line;
 	int		heigth;
 
-	skip_file_lines(map); //check if skiped the 1 line later
+	skip_file_lines(map);
 	heigth = 0;
 	while ((line = get_next_line(map->fd)) != NULL)
 	{

@@ -4,7 +4,7 @@
 # include "cub.h"
 # include <stdbool.h>
 
-typedef struct	s_player
+typedef struct s_player
 {
 	double		x;
 	double		y;
@@ -21,14 +21,15 @@ typedef struct	s_player
 	bool		right_rotate;
 }	t_player;
 
-typedef struct	s_canvas
+typedef struct s_canvas
 {
 	void		*mlx;
 	void		*win;
 	void		*img;
 }	t_canvas;
 
-typedef struct s_texture {
+typedef struct s_texture
+{
 	void		*img;
 	char		*data;
 	int			width;
@@ -37,29 +38,29 @@ typedef struct s_texture {
 	int			size_line;
 	int			endian;
 	char		*path;
-} t_texture;
+}	t_texture;
 
-typedef struct s_color {
+typedef struct s_color
+{
 	int			red;
 	int			blue;
 	int			green;
-} t_color;
+}	t_color;
 
-
-typedef struct s_mapi {
+typedef struct s_mapi
+{
 	char	**map;
 	char	*file_name;
 	int		height;
 	int		skip_lines;
 	int		fd;
-} t_mapi;
-
+}	t_mapi;
 
 typedef struct s_ray
 {
 	double		cos_angle;
 	double		sin_angle;
-	double		EPS;
+	double		eps;
 	double		delta_x;
 	double		delta_y;
 	double		angle;
@@ -85,6 +86,7 @@ typedef struct s_ray
 	double		wall_hit;
 	int			tex_x;
 	double		orig_height;
+	double		orig_start_f;
 	double		orig_end_f;
 	int			draw_start;
 	int			draw_end;
@@ -98,7 +100,7 @@ typedef struct s_ray
 
 }	t_ray;
 
-typedef struct	s_game
+typedef struct s_game
 {
 	char		*data;
 	int			bpp;

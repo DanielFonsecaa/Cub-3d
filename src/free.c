@@ -9,13 +9,15 @@ int	close_and_printf(t_game *game)
 
 int	close_game(t_game *game, char *msg)
 {
+	int	i;
+
 	if (!game)
 		return (1);
 	close_textures(game);
 	close_canvas(game);
 	if (game->grid.map)
 	{
-		int i = 0;
+		i = 0;
 		while (game->grid.map[i])
 			free(game->grid.map[i++]);
 		free(game->grid.map);
@@ -41,7 +43,7 @@ void	close_canvas(t_game *game)
 		mlx_destroy_image(game->canvas.mlx, game->canvas.img);
 	if (game->canvas.win)
 		mlx_destroy_window(game->canvas.mlx, game->canvas.win);
-	if (game->canvas.mlx) 
+	if (game->canvas.mlx)
 	{
 		mlx_destroy_display(game->canvas.mlx);
 		free(game->canvas.mlx);

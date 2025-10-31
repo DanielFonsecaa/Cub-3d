@@ -11,7 +11,7 @@ void	start(t_game *game)
 	if (!game->canvas.img)
 		close_game(game, INVALID_TEXTURE);
 	game->data = mlx_get_data_addr(game->canvas.img, &game->bpp,
-					&game->size_line, &game->endian);
+			&game->size_line, &game->endian);
 	if (!game->data)
 		close_game(game, INVALID_TEXTURE);
 	mlx_hook(game->canvas.win, 2, 1L << 0, key_press, game);
@@ -21,7 +21,7 @@ void	start(t_game *game)
 	mlx_loop(game->canvas.mlx);
 }
 
-void	game_loop(t_game *game)
+int	game_loop(t_game *game)
 {
 	t_player	player;
 	double		fraction;
@@ -41,12 +41,13 @@ void	game_loop(t_game *game)
 	i = 0;
 	while (i < WIDTH)
 	{
-		draw_line(game->player, game, start_x, i); //todo
+		draw_line(&game->player, game, start_x, i); //todo
 		start_x += fraction;
 		i++;
 	}
 	mlx_put_image_to_window(game->canvas.mlx, game->canvas.win,
-		game->canvas.img, 0 , 0);
+		game->canvas.img, 0, 0);
+	return (0);
 }
 
 void	fill_background(t_game *game)
@@ -56,7 +57,7 @@ void	fill_background(t_game *game)
 	int	half;
 	int	roof_color;
 	int	floor_color;
-	
+
 	roof_color = (game->cealing.blue) | (game->cealing.green << 8)
 		| (game->cealing.red << 16);
 	floor_color = (game->floor.blue) | (game->floor.green << 8)
@@ -81,27 +82,27 @@ void	fill_background(t_game *game)
 void	init_textures(t_game *g)
 {
 	g->north.img = mlx_xpm_file_to_image(g->canvas.mlx, g->north.path,
-						&g->north.width, &g->north.height);
+			&g->north.width, &g->north.height);
 	if (!g->north.img)
 		close_game(g, "Error\nMlx failed to load north\n");
 	g->north.data = mlx_get_data_addr(g->north.img, &g->north.bpp,
-						&g->north.size_line, &g->north.endian);
+			&g->north.size_line, &g->north.endian);
 	g->south.img = mlx_xpm_file_to_image(g->canvas.mlx, g->south.path,
-						&g->south.width, &g->south.height);
+			&g->south.width, &g->south.height);
 	if (!g->south.img)
 		close_game(g, "Error\nMlx failed to load south\n");
 	g->south.data = mlx_get_data_addr(g->south.img, &g->south.bpp,
-						&g->south.size_line, &g->south.endian);
+			&g->south.size_line, &g->south.endian);
 	g->west.img = mlx_xpm_file_to_image(g->canvas.mlx, g->west.path,
-						&g->west.width, &g->west.height);
+			&g->west.width, &g->west.height);
 	if (!g->west.img)
 		close_game(g, "Error\nMlx failed to load west\n");
 	g->west.data = mlx_get_data_addr(g->west.img, &g->west.bpp,
-						&g->west.size_line, &g->west.endian);
+			&g->west.size_line, &g->west.endian);
 	g->east.img = mlx_xpm_file_to_image(g->canvas.mlx, g->east.path,
-						&g->east.width, &g->east.height);
+			&g->east.width, &g->east.height);
 	if (!g->east.img)
 		close_game(g, "Error\nMlx failed to load east\n");
 	g->east.data = mlx_get_data_addr(g->east.img, &g->east.bpp,
-						&g->east.size_line, &g->east.endian);
+			&g->east.size_line, &g->east.endian);
 }

@@ -34,8 +34,6 @@ int	set_texture_path(t_texture *texture, char *line, char *dir, int i)
 {
 	if (ft_strncmp(dir, line + i, 2) == 0)
 	{
-		//if (texture->path)
-			//close_game(game, "Error\nDuplicate texture definition\n");
 		texture->path = ft_strtrim(line + i + 2, WS);
 		return (1);
 	}
