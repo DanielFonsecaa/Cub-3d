@@ -32,23 +32,10 @@ void	compute_tex(t_game *g, t_ray *r, int i, t_tex *t)
 t_tex	*compute_per(t_game *g, t_ray *r, t_player *p)
 {
 	t_tex	*texture;
-	double		boundary;
+	double	boundary;
 
 	if (r->side == 0)
-	{
-		if (r->step_x > 0)
-			texture = &g->east;
-		else
-			texture = &g->west;
-		if (r->step_x < 0)
-			boundary = (r->map_x + 1) * BLOCK;
-		else
-			boundary = r->map_x * BLOCK;
-		if (r->cos_angle == 0)
-			r->perp_dist = (boundary - p->x) / (1e-9);
-		else
-			r->perp_dist = (boundary - p->x) / (r->cos_angle);
-	}
+		texture = side_gt_zero(g, r, p);
 	else
 	{
 		if (r->step_y > 0)

@@ -20,8 +20,9 @@
 
 //parsing
 void	parsing(t_game *game, char *map_name);
-void	get_map(t_game *game, char *map_name);
 void	fill_map(t_mapi *map, int *flag);
+void	skip_invalid_map(t_mapi *map, int *flag);
+void	find_skip_lines(t_mapi *map);
 
 //assets
 void	handle_assets(t_game *game, t_mapi *map);
@@ -73,6 +74,7 @@ void	dda_loop(t_game *game, t_ray *ray);
 void	compute_tex(t_game *g, t_ray *r,
 			int i, t_tex *t);
 t_tex	*compute_per(t_game *g, t_ray *r, t_player *p);
+t_tex	*side_gt_zero(t_game *g, t_ray *r, t_player *p);
 
 //draw
 void	set_configure(t_game *g, t_ray *r, int i, t_tex *t);

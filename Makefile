@@ -38,6 +38,7 @@ FILES			=	main.c \
 					parsing/validate.c \
 					raycast/draw.c \
 					raycast/rendering.c \
+					raycast/rendering_helper.c \
 					free.c \
 					game.c \
 					movement.c \

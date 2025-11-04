@@ -2,11 +2,6 @@
 
 void	parsing(t_game *game, char *map_name)
 {
-	get_map(game, map_name);
-}
-
-void	get_map(t_game *game, char *map_name)
-{
 	t_mapi	map;
 	char	**grid;
 	int		map_lines;
@@ -51,16 +46,26 @@ void	handle_assets(t_game *game, t_mapi *map)
 		free(line);
 		map->skip_lines++;
 	}
-	while ((line = get_next_line(map->fd)) != NULL)
+	find_skip_lines(map);
+	close(map->fd);
+}
+
+void	find_skip_lines(t_mapi *map)
+{
+	char	*line;
+
+	line = NULL;
+	line = get_next_line(map->fd);
+	while (line != NULL)
 	{
 		if (find_valid_line(line))
 			break ;
 		free(line);
 		map->skip_lines++;
+		line = get_next_line(map->fd);
 	}
 	map->skip_lines--;
 	free(line);
-	close(map->fd);
 }
 
 void	fill_map(t_mapi *map, int *flag)
@@ -70,7 +75,8 @@ void	fill_map(t_mapi *map, int *flag)
 
 	skip_file_lines(map);
 	heigth = 0;
-	while ((line = get_next_line(map->fd)) != NULL)
+	line = get_next_line(map->fd);
+	while (line != NULL)
 	{
 		if (!find_valid_line(line))
 		{
@@ -78,8 +84,19 @@ void	fill_map(t_mapi *map, int *flag)
 			break ;
 		}
 		map->map[heigth++] = line;
+		line = get_next_line(map->fd);
 	}
-	while ((line = get_next_line(map->fd)) != NULL)
+	skip_invalid_map(map, flag);
+	map->height = heigth;
+}
+
+void	skip_invalid_map(t_mapi *map, int *flag)
+{
+	char	*line;
+
+	line = NULL;
+	line = get_next_line(map->fd);
+	while (line != NULL)
 	{
 		if (find_valid_line(line))
 		{
@@ -88,6 +105,7 @@ void	fill_map(t_mapi *map, int *flag)
 			break ;
 		}
 		free(line);
+		line = get_next_line(map->fd);
 	}
-	map->height = heigth;
+	free(line);
 }

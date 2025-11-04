@@ -10,11 +10,14 @@ int	get_number_lines_map(t_mapi *map)
 	fd = open(map->file_name, O_RDONLY);
 	if (fd < 0)
 		return (0);
-	while ((line = get_next_line(fd)) != NULL)
+	line = get_next_line(fd);
+	while (line != NULL)
 	{
 		num_lines++;
 		free(line);
+		line = get_next_line(fd);
 	}
+	free(line);
 	close(fd);
 	return (num_lines);
 }
