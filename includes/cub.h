@@ -27,7 +27,7 @@ void	fill_map(t_mapi *map, int *flag);
 void	handle_assets(t_game *game, t_mapi *map);
 void	get_textures(t_game *game, char *line);
 void	set_direction_texture(t_game *game, char *line, int i);
-int		set_texture_path(t_texture *texture, char *line, char *dir, int i);
+int		set_texture_path(t_tex *texture, char *line, char *dir, int i);
 void	set_floor_cealing(t_game *game, char *line, int i);
 void	set_background_color(t_game *game, t_color *bg, int i, char *line);
 
@@ -67,17 +67,17 @@ void	go_left(t_game *game, double sin, double cos);
 void	go_right(t_game *game, double sin, double cos);
 
 //rendering
-void	draw_line(t_player *player, t_game *game, double start_x, int i);
-void	init_starting_values(t_game *game, t_player *player, double start_x);
+void	draw_line(t_player *player, t_game *game, t_plane *plane, int i);
+void	init_r_val(t_game *game, t_player *player, double raydx, double raydy);
 void	dda_loop(t_game *game, t_ray *ray);
-void	compute_tex_with_uncorrect_dist(t_game *g, t_ray *r,
-		int	i, t_texture *t);
-t_texture	*compute_per(t_game *g, t_ray *r, t_player *p, double start_x);
+void	compute_tex(t_game *g, t_ray *r,
+			int i, t_tex *t);
+t_tex	*compute_per(t_game *g, t_ray *r, t_player *p);
 
 //draw
-void	set_configure(t_game *g, t_ray *r, int i, t_texture *t);
-void	flip_and_draw(t_game *g, t_ray *r, int i, t_texture *t);
-void	draw_lines(t_game *g, t_ray *r, int i, t_texture *t);
+void	set_configure(t_game *g, t_ray *r, int i, t_tex *t);
+void	flip_and_draw(t_game *g, t_ray *r, int i, t_tex *t);
+void	draw_lines(t_game *g, t_ray *r, int i, t_tex *t);
 void	put_pixel(int x, int y, int color, t_game *game);
 void	put_pixel_safe(int x, int y, int color, t_game *game);
 

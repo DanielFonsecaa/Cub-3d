@@ -28,7 +28,7 @@ typedef struct s_canvas
 	void		*img;
 }	t_canvas;
 
-typedef struct s_texture
+typedef struct s_tex
 {
 	void		*img;
 	char		*data;
@@ -38,7 +38,7 @@ typedef struct s_texture
 	int			size_line;
 	int			endian;
 	char		*path;
-}	t_texture;
+}	t_tex;
 
 typedef struct s_color
 {
@@ -61,10 +61,7 @@ typedef struct s_ray
 	double		cos_angle;
 	double		sin_angle;
 	double		eps;
-	double		delta_x;
-	double		delta_y;
 	double		angle;
-	double		fix_dist;
 	double		delta_dist_x;
 	double		delta_dist_y;
 	int			map_x;
@@ -100,6 +97,18 @@ typedef struct s_ray
 
 }	t_ray;
 
+typedef struct s_plane
+{
+	double		dirx;
+	double		diry;
+	double		planex;
+	double		planey;
+	double		plane_len;
+	double		camera_x;
+	double		raydx;
+	double		raydy;
+}	t_plane;
+
 typedef struct s_game
 {
 	char		*data;
@@ -114,10 +123,10 @@ typedef struct s_game
 	t_color		cealing;
 	t_player	player;
 	t_canvas	canvas;
-	t_texture	north;
-	t_texture	south;
-	t_texture	east;
-	t_texture	west;
+	t_tex		north;
+	t_tex		south;
+	t_tex		east;
+	t_tex		west;
 	t_mapi		grid;
 	t_ray		ray;
 }	t_game;

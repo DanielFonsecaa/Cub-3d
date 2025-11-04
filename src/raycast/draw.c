@@ -1,14 +1,16 @@
 #include "../../includes/cub.h"
 
-void	set_configure(t_game *g, t_ray *r, int i, t_texture *t)
+void	set_configure(t_game *g, t_ray *r, int i, t_tex *t)
 {
 	int	draw_pixels;
 
+	if (r->proj_plane == 0.0)
+		r->proj_plane = (WIDTH / 2.0) / tan(FOV / 2.0);
 	r->orig_height = (BLOCK / r->perp_dist) * r->proj_plane;
 	if (r->orig_height < 1.0)
 		r->orig_height = 1.0;
 	r->orig_start_f = (HEIGHT - r->orig_height) / 2.0;
-	r->orig_end_f = (r->orig_start_f + r->orig_height);
+	r->orig_end_f = r->orig_start_f + r->orig_height;
 	r->draw_start = (int)r->orig_start_f;
 	r->draw_end = (int)r->orig_end_f;
 	if (r->draw_start < 0)
@@ -19,12 +21,12 @@ void	set_configure(t_game *g, t_ray *r, int i, t_texture *t)
 	if (draw_pixels <= 0)
 		return ;
 	r->tex_step = (double)t->height / r->orig_height;
-	r->tex_pos = ((double)(r->draw_start - r->orig_start_f) * (r->tex_step));
+	r->tex_pos = (r->draw_start - r->orig_start_f) * r->tex_step;
 	r->tex_x_flipped = r->tex_x;
 	flip_and_draw(g, r, i, t);
 }
 
-void	flip_and_draw(t_game *g, t_ray *r, int i, t_texture *t)
+void	flip_and_draw(t_game *g, t_ray *r, int i, t_tex *t)
 {
 	if (r->side == 0)
 	{
@@ -39,7 +41,7 @@ void	flip_and_draw(t_game *g, t_ray *r, int i, t_texture *t)
 	draw_lines(g, r, i, t);
 }
 
-void	draw_lines(t_game *g, t_ray *r, int i, t_texture *t)
+void	draw_lines(t_game *g, t_ray *r, int i, t_tex *t)
 {
 	int				y;
 	int				color;
@@ -73,7 +75,7 @@ void	put_pixel(int x, int y, int color, t_game *game)
 	int	index;
 
 	if (!game || !game->data)
-		return;
+		return ;
 	if (y < 0 || x >= WIDTH || y >= HEIGHT || x < 0)
 		return ;
 	index = y * game->size_line + x * (game->bpp / 8);

@@ -23,26 +23,24 @@ void	start(t_game *game)
 
 int	game_loop(t_game *game)
 {
-	t_player	player;
-	double		fraction;
-	double		start_x;
-	int			i;
+	t_plane	plane;
+	int		i;
 
-	player = game->player;
+	ft_bzero(&plane, sizeof(t_plane));
 	move_player(game);
 	fill_background(game);
-/* 	if (DEBUG)
-	{
-		draw_square((int)player->x, (int)player->y, 10, GREEN, game); //todo
-		draw_map(game); //todo
-	} */
-	fraction = PI / 3 / WIDTH;
-	start_x = player.angle - PI / 6;
+	plane.dirx = cos(game->player.angle);
+	plane.diry = sin(game->player.angle);
+	plane.plane_len = tan(FOV / 2.0);
+	plane.planex = -plane.diry * plane.plane_len;
+	plane.planey = plane.dirx * plane.plane_len;
 	i = 0;
 	while (i < WIDTH)
 	{
-		draw_line(&game->player, game, start_x, i);
-		start_x += fraction;
+		plane.camera_x = (2.0 * i) / (double)WIDTH - 1.0;
+		plane.raydx = plane.dirx + plane.planex * plane.camera_x;
+		plane.raydy = plane.diry + plane.planey * plane.camera_x;
+		draw_line(&game->player, game, &plane, i);
 		i++;
 	}
 	mlx_put_image_to_window(game->canvas.mlx, game->canvas.win,

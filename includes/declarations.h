@@ -5,7 +5,7 @@
 
 # define WIDTH 1280
 # define HEIGHT 720
-# define FOV (60.0 * PI / 180.0)
+# define FOV 1.0471975511965977461542144610931676280657231331250
 # define BLOCK 64
 # define DEBUG 0
 # define WS " \t\n\r\v\f"
@@ -17,7 +17,7 @@
 # define D 100
 # define LEFT 65361
 # define RIGHT 65363
-# define PI 3.14159265359
+# define PI 3.14159265358979323846264338327950288419716939937510
 
 # define EXT ".cub"
 

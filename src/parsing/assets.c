@@ -30,7 +30,7 @@ void	set_direction_texture(t_game *game, char *line, int i)
 		game->assets_ready++;
 }
 
-int	set_texture_path(t_texture *texture, char *line, char *dir, int i)
+int	set_texture_path(t_tex *texture, char *line, char *dir, int i)
 {
 	if (ft_strncmp(dir, line + i, 2) == 0)
 	{

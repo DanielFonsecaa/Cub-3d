@@ -1,22 +1,22 @@
 #include "../../includes/cub.h"
 
-void	draw_line(t_player *player, t_game *game, double start_x, int i)
+void	draw_line(t_player *player, t_game *game, t_plane *plane, int i)
 {
-	t_texture	*texture;
+	t_tex	*texture;
 
-	init_starting_values(game, player, start_x);
+	init_r_val(game, player, plane->raydx, plane->raydy);
 	dda_loop(game, &game->ray);
-	texture = compute_per(game, &game->ray, &game->player, start_x);
-	compute_tex_with_uncorrect_dist(game, &game->ray, i, texture);
+	texture = compute_per(game, &game->ray, &game->player);
+	compute_tex(game, &game->ray, i, texture);
 }
 
-void	compute_tex_with_uncorrect_dist(t_game *g, t_ray *r,
-		int i, t_texture *t)
+void	compute_tex(t_game *g, t_ray *r, int i, t_tex *t)
 {
 	r->proj_plane = (WIDTH / 2.0) / tan(FOV / 2.0);
-	r->wall_hit = r->hit_x;
 	if (r->side == 0)
 		r->wall_hit = r->hit_y;
+	else
+		r->wall_hit = r->hit_x;
 	r->wall_hit = fmod(r->wall_hit, BLOCK);
 	if (r->wall_hit < 0)
 		r->wall_hit += BLOCK;
@@ -29,32 +29,45 @@ void	compute_tex_with_uncorrect_dist(t_game *g, t_ray *r,
 		set_configure(g, r, i, t);
 }
 
-t_texture	*compute_per(t_game *g, t_ray *r, t_player *p, double start_x)
+t_tex	*compute_per(t_game *g, t_ray *r, t_player *p)
 {
-	t_texture	*texture;
+	t_tex	*texture;
+	double		boundary;
 
 	if (r->side == 0)
 	{
-		texture = &g->west;
 		if (r->step_x > 0)
 			texture = &g->east;
-		r->perp_dist = r->side_dist_x - r->delta_dist_x;
-		r->uncorredted_dist = r->side_dist_x - r->delta_dist_x;
+		else
+			texture = &g->west;
+		if (r->step_x < 0)
+			boundary = (r->map_x + 1) * BLOCK;
+		else
+			boundary = r->map_x * BLOCK;
+		if (r->cos_angle == 0)
+			r->perp_dist = (boundary - p->x) / (1e-9);
+		else
+			r->perp_dist = (boundary - p->x) / (r->cos_angle);
 	}
 	else
 	{
-		texture = &g->north;
 		if (r->step_y > 0)
 			texture = &g->south;
-		r->perp_dist = r->side_dist_y - r->delta_dist_y;
-		r->uncorredted_dist = r->side_dist_y - r->delta_dist_y;
+		else
+			texture = &g->north;
+		if (r->step_y < 0)
+			boundary = (r->map_y + 1) * BLOCK;
+		else
+			boundary = r->map_y * BLOCK;
+		if (r->sin_angle == 0)
+			r->perp_dist = (boundary - p->y) / (1e-9);
+		else
+			r->perp_dist = (boundary - p->y) / (r->sin_angle);
 	}
 	if (r->perp_dist < 1e-6)
 		r->perp_dist = 1e-6;
-	r->hit_x = p->x + r->uncorredted_dist * r->cos_angle;
-	r->hit_y = p->y + r->uncorredted_dist * r->sin_angle;
-	r->angle_diff = start_x - p->angle;
-	r->perp_dist = r->perp_dist * cos(r->angle_diff);
+	r->hit_x = p->x + r->perp_dist * r->cos_angle;
+	r->hit_y = p->y + r->perp_dist * r->sin_angle;
 	return (texture);
 }
 
@@ -87,9 +100,9 @@ void	dda_loop(t_game *game, t_ray *ray)
 	}
 }
 
-void	init_starting_values(t_game *game, t_player *player, double start_x)
+void	init_r_val(t_game *game, t_player *player, double raydx, double raydy)
 {
-	(game->ray) = (t_ray){.cos_angle = cos(start_x), .sin_angle = sin(start_x),
+	(game->ray) = (t_ray){.cos_angle = raydx, .sin_angle = raydy,
 		.iter = 0, .rows = 0, .eps = 1e-9, .step_x = 1, .step_y = 1};
 	game->ray.delta_dist_x = fabs((double)BLOCK / game->ray.cos_angle);
 	if (fabs(game->ray.cos_angle) < game->ray.eps)

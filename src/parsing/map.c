@@ -59,6 +59,7 @@ void	handle_assets(t_game *game, t_mapi *map)
 		map->skip_lines++;
 	}
 	map->skip_lines--;
+	free(line);
 	close(map->fd);
 }
 
