@@ -54,7 +54,7 @@ t_texture	*compute_per(t_game *g, t_ray *r, t_player *p, double start_x)
 	r->hit_x = p->x + r->uncorredted_dist * r->cos_angle;
 	r->hit_y = p->y + r->uncorredted_dist * r->sin_angle;
 	r->angle_diff = start_x - p->angle;
-	r->perp_dist = r->perp_dist * cos(start_x);
+	r->perp_dist = r->perp_dist * cos(r->angle_diff);
 	return (texture);
 }
 

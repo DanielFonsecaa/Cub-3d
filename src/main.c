@@ -182,6 +182,6 @@ int	main(int argc, char **argv)
 		perror("get_map");
 		exit(1);
 	}
-	//loop(&game, game.player);
+	start(&game);
 	return (0);
 }

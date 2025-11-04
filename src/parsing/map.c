@@ -13,6 +13,7 @@ void	get_map(t_game *game, char *map_name)
 	int		flag;
 
 	flag = 0;
+	ft_bzero(&map, sizeof(t_mapi));
 	valid_name(game, &map, map_name);
 	map_lines = get_number_lines_map(&map);
 	if (map_lines <= 0)

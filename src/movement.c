@@ -7,19 +7,19 @@ bool	touch(double px, double py, t_game *game)
 	int		rows;
 	size_t	row_len;
 
-	if (!game || !game->map)
+	if (!game || !game->grid.map)
 		return (true);
 	x = (int)(px / BLOCK);
 	y = (int)(py / BLOCK);
 	rows = 0;
-	while (game->map[rows])
+	while (game->grid.map[rows])
 		rows++;
 	if (y < 0 || y >= rows)
 		return (true);
-	row_len = ft_strlen(game->map[y]);
+	row_len = ft_strlen(game->grid.map[y]);
 	if (x < 0 || (size_t)x >= row_len)
 		return (true);
-	return (game->map[y][x] == '1');
+	return (game->grid.map[y][x] == '1');
 }
 
 void	go_up(t_game *game, double sin, double cos)

@@ -4,8 +4,8 @@ void	start(t_game *game)
 {
 	game->player.speed = 2;
 	game->player.angle_speed = 0.03;
-	init_textures(game);
 	game->canvas.mlx = mlx_init();
+	init_textures(game);
 	game->canvas.win = mlx_new_window(game->canvas.mlx, WIDTH, HEIGHT, "cub3d");
 	game->canvas.img = mlx_new_image(game->canvas.mlx, WIDTH, HEIGHT);
 	if (!game->canvas.img)
@@ -41,7 +41,7 @@ int	game_loop(t_game *game)
 	i = 0;
 	while (i < WIDTH)
 	{
-		draw_line(&game->player, game, start_x, i); //todo
+		draw_line(&game->player, game, start_x, i);
 		start_x += fraction;
 		i++;
 	}
