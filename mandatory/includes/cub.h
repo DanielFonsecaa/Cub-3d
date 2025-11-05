@@ -11,8 +11,8 @@
 # include <strings.h>
 
 //	Custom libs
-# include "../lib/mlx/mlx.h"
-# include "../lib/libft/libft/libft.h"
+# include "../../lib/mlx/mlx.h"
+# include "../../lib/libft/libft/libft.h"
 
 //	Custom headers
 # include "structs.h"
@@ -31,6 +31,8 @@ void	set_direction_texture(t_game *game, char *line, int i);
 int		set_texture_path(t_tex *texture, char *line, char *dir, int i);
 void	set_floor_cealing(t_game *game, char *line, int i);
 void	set_background_color(t_game *game, t_color *bg, int i, char *line);
+int		validate_rgb(t_game *game, char *line, int *i);
+int		rgb_helper(t_game *game, char *str, char *line, int *i);
 
 //arrumar o lugar pra essas
 void	init_textures(t_game *g);
@@ -44,6 +46,7 @@ void	validate_cell(t_game *game, int column_pos, int row_pos, int *flag);
 void	valid_name(t_game *game, t_mapi *map, char *map_name);
 void	validate(t_game *game, int *invalid_map);
 void	validate_map(t_game *game);
+void	validade_player(t_game *game, char **map, int x, int y);
 
 //utils
 void	skip_file_lines(t_mapi *map);

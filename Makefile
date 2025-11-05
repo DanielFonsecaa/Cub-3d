@@ -11,24 +11,20 @@ MLX_URL			= https://cdn.intra.42.fr/document/document/40925/minilibx-linux.tgz
 #==============================================================================#
 
 NAME 			= cub3D
-#NAME_BONUS 		= cub3D_bonus
+NAME_BONUS 		= cub3D_bonus
 
 ### Message Vars
 
-_SUCCESS 		= [$(GRN)SUCCESS$(D)]
+_SUCCESS 		= $(GRN)SUCCESS$(D)
 
 #==============================================================================#
 #                                    PATHS                                     #
 #==============================================================================#
 
-SRC_PATH		= src
-INC_PATH		= includes
+SRC_PATH		= mandatory/src
+INC_PATH		= mandatory/includes
 LIBS_PATH		= lib
-BUILD_PATH		= .build
-
-#BONUS_SRC_PATH		= src_bonus
-#BONUS_INC_PATH		= includes_bonus
-#BONUS_BUILD_PATH		= .build_bonus
+BUILD_PATH		= mandatory/.build
 
 
 FILES			=	main.c \
@@ -48,17 +44,41 @@ SRC						= $(addprefix $(SRC_PATH)/, $(FILES))
 OBJS					= $(SRC:$(SRC_PATH)/%.c=$(BUILD_PATH)/%.o)
 HEADERS					= $(INC_PATH)/cub.h
 
-#BONUS_FILES	= main_bonus.c
+#==============================================================================#
+#                                    BONUS                                     #
+#==============================================================================#
 
-#BONUS_SRC						= $(addprefix $(BONUS_SRC_PATH)/, $(BONUS_FILES))
-#BONUS_OBJS					= $(BONUS_SRC:$(BONUS_SRC_PATH)/%.c=$(BONUS_BUILD_PATH)/%.o)
-#BONUS_HEADERS				= $(BONUS_INC_PATH)/so_long_bonus.h
+BONUS_SRC_PATH		= bonus/src_bonus
+BONUS_INC_PATH		= bonus/includes_bonus
+BONUS_BUILD_PATH	= bonus/.build_bonus
+BONUS_FILES			= main.c \
+					  parsing/assets.c \
+					  parsing/map.c \
+					  parsing/map_utils.c \
+					  parsing/validate.c \
+					  minimap/minimap.c \
+					  minimap/minimap_helper.c \
+					  raycast/draw.c \
+					  raycast/rendering.c \
+					  raycast/rendering_helper.c \
+					  free.c \
+					  game.c \
+					  movement.c \
+					  player.c
+
+BONUS_SRC			= $(addprefix $(BONUS_SRC_PATH)/, $(BONUS_FILES))
+BONUS_OBJS			= $(BONUS_SRC:$(BONUS_SRC_PATH)/%.c=$(BONUS_BUILD_PATH)/%.o)
+
+
+#==============================================================================#
+#                                    LIBS                                      #
+#==============================================================================#
 
 
 MLX_PATH			= $(LIBS_PATH)/mlx
 MLX_ARC				= $(MLX_PATH)/libmlx_Linux.a
-LIBFT_PATH		= $(LIBS_PATH)/libft
-LIBFT_ARC		= $(LIBFT_PATH)/libft.a
+LIBFT_PATH			= $(LIBS_PATH)/libft
+LIBFT_ARC			= $(LIBFT_PATH)/libft.a
 
 
 #==============================================================================#
@@ -72,7 +92,7 @@ CFLAGS				= -Wall -Wextra -Werror -g
 RFLAGS				= -L ./lib/mlx -lmlx -L/usr/lib/X11 -lXext -lX11 -lm -g3 -lbsd
 
 INC						= -I $(INC_PATH)
-#BONUS_INC						= -I $(BONUS_INC_PATH)
+BONUS_INC						= -I $(BONUS_INC_PATH)
 
 RM		= rm -rf
 AR		= ar rcs
@@ -131,33 +151,32 @@ get_mlx:
 	fi
 
 #BONUS RULES
-#bonus: all $(BONUS_BUILD_PATH) $(NAME_BONUS)	## Compile
-#
-#$(NAME_BONUS): $(BONUS_BUILD_PATH) $(LIBFT_ARC) $(MLX_ARC) $(BONUS_OBJS)
-#	@echo "$(GOLD)Compiling $(MAG)$(NAME)$(GOLD) mandatory version$(D)"
-#	$(CC) $(CFLAGS) $(BONUS_OBJS) $(BONUS_INC) $(LIBFT_ARC) $(MLX_ARC) $(RFLAGS) -o $(NAME_BONUS)
-#	@echo "[$(_SUCCESS) compiling $(MAG)$(NAME_BONUS)$(D) $(GOLD)🖔$(D)]"
-#
-#$(BONUS_BUILD_PATH)/%.o: $(BONUS_SRC_PATH)/%.c $(BONUS_HEADERS)
-#	@mkdir -p $(dir $@)
-#	@echo -n "$(MAG)█$(D)"
-#	$(CC) $(CFLAGS) $(BONUS_INC) -c $< -o $@
-#
-#$(BONUS_BUILD_PATH):
-#	$(MKDIR_P) $(BONUS_BUILD_PATH)
-#	@echo "* $(GOLD)Creating $(BLU)$(BONUS_BUILD_PATH)$(GOLD) folder:$(D) $(_SUCCESS)"
-#
+bonus: all $(BONUS_BUILD_PATH) $(NAME_BONUS)	## Compile
+
+$(NAME_BONUS): $(BONUS_BUILD_PATH) $(LIBFT_ARC) $(MLX_ARC) $(BONUS_OBJS)
+	@$(CC) $(CFLAGS) $(BONUS_OBJS) $(BONUS_INC) $(LIBFT_ARC) $(MLX_ARC) $(RFLAGS) -o $(NAME_BONUS)
+	@echo "\t$(_SUCCESS) compiling $(MAG)$(NAME_BONUS)$(D) $(GOLD)🖔$(D)"
+
+$(BONUS_BUILD_PATH)/%.o: $(BONUS_SRC_PATH)/%.c $(BONUS_HEADERS)
+	@mkdir -p $(dir $@)
+	@echo -n "$(BLU)██$(D)"
+	@$(CC) $(CFLAGS) $(BONUS_INC) -c $< -o $@
+
+$(BONUS_BUILD_PATH):
+	@$(MKDIR_P) $(BONUS_BUILD_PATH)
+	@echo "$(GOLD)Creating $(SILV)$(BONUS_BUILD_PATH)$(GOLD) folder:$(D) $(_SUCCESS)"
+
 
 clean:				## Remove object files
 	@echo "$(GOLD)Cleaning object files$(D)"
 	$(RM) $(BUILD_PATH);
-#$(RM) $(BONUS_BUILD_PATH);
+	$(RM) $(BONUS_BUILD_PATH);
 	@echo "$(GOLD)Removing $(SILV)$(BUILD_PATH) $(D) folder & files$(D): $(_SUCCESS)"; \
 
 fclean: clean			## Remove executable and .gdbinit
 	@echo "$(GOLD)Cleaning executables$(D)"
 	$(RM) $(NAME) 
-# $(RM) $(NAME_BONUS);
+	$(RM) $(NAME_BONUS);
 	echo "$(GOLD)Removing $(SILV)$(NAME)$(D) file: $(_SUCCESS)"; \
 
 libclean: fclean	## Remove libs

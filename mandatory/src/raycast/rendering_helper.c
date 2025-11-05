@@ -6,9 +6,9 @@ t_tex	*side_gt_zero(t_game *g, t_ray *r, t_player *p)
 	double	boundary;
 
 	if (r->step_x > 0)
-		texture = &g->east;
-	else
 		texture = &g->west;
+	else
+		texture = &g->east;
 	if (r->step_x < 0)
 		boundary = (r->map_x + 1) * BLOCK;
 	else

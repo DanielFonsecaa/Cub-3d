@@ -1,4 +1,4 @@
-#include "../../includes/cub.h"
+#include "../../includes_bonus/cub.h"
 
 void	draw_line(t_player *player, t_game *game, t_plane *plane, int i)
 {
@@ -25,8 +25,7 @@ void	compute_tex(t_game *g, t_ray *r, int i, t_tex *t)
 		r->tex_x = 0;
 	if (r->tex_x >= t->width)
 		r->tex_x = t->width - 1;
-	if (!DEBUG)
-		set_configure(g, r, i, t);
+	set_configure(g, r, i, t);
 }
 
 t_tex	*compute_per(t_game *g, t_ray *r, t_player *p)

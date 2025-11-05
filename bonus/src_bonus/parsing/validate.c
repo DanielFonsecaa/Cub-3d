@@ -1,4 +1,4 @@
-#include "../../includes/cub.h"
+#include "../../includes_bonus/cub.h"
 
 void	validate(t_game *game, int *invalid_map)
 {
@@ -51,12 +51,13 @@ void	validate_cell(t_game *game, int column_pos, int row_pos, int *flag)
 	map = game->grid.map;
 	if (ft_strchr("NWES", map[column_pos][row_pos]))
 	{
+		validade_player(game, map, column_pos, row_pos);
 		set_player(game, column_pos, row_pos, flag);
 		return ;
 	}
 	if (column_pos == 0 || !map[column_pos - 1]
-		|| ft_strchr(WS, map[column_pos - 1][row_pos])
-		|| row_pos >= (int)ft_strlen(map[column_pos - 1]))
+		|| row_pos >= (int)ft_strlen(map[column_pos - 1])
+		|| ft_strchr(WS, map[column_pos - 1][row_pos]))
 		close_game(game, MAP_INVALID);
 	if (row_pos >= (int)ft_strlen(map[column_pos + 1])
 		|| !map[column_pos + 1] || ft_strchr(WS, map[column_pos + 1][row_pos]))
@@ -66,6 +67,23 @@ void	validate_cell(t_game *game, int column_pos, int row_pos, int *flag)
 		close_game(game, MAP_INVALID);
 	if (row_pos + 1 >= (int)ft_strlen(map[column_pos])
 		|| !map[column_pos] || ft_strchr(WS, map[column_pos][row_pos + 1]))
+		close_game(game, MAP_INVALID);
+}
+
+void	validade_player(t_game *game, char **map, int x, int y)
+{
+	if (x == 0 || !map[x - 1]
+		|| y >= (int)ft_strlen(map[x - 1])
+		|| ft_strchr(WS, map[x - 1][y]))
+		close_game(game, MAP_INVALID);
+	if (y >= (int)ft_strlen(map[x + 1])
+		|| !map[x + 1] || ft_strchr(WS, map[x + 1][y]))
+		close_game(game, MAP_INVALID);
+	if (y == 0 || !map[x]
+		|| ft_strchr(WS, map[x][y - 1]))
+		close_game(game, MAP_INVALID);
+	if (y + 1 >= (int)ft_strlen(map[x])
+		|| !map[x] || ft_strchr(WS, map[x][y + 1]))
 		close_game(game, MAP_INVALID);
 }
 

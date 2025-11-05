@@ -1,4 +1,4 @@
-#include "../../includes/cub.h"
+#include "../../includes_bonus/cub.h"
 
 void	get_textures(t_game *game, char *line)
 {
@@ -64,29 +64,20 @@ void	set_floor_cealing(t_game *game, char *line, int i)
 
 void	set_background_color(t_game *game, t_color *bg, int i, char *line)
 {
-	int		start;
-	int		j;
-	char	color[4];
+	int	j;
+	int	color;
 
 	j = -1;
 	while (++j < 3)
 	{
 		while (ft_iswhite_space(line[i]))
-			i += 1;
-		start = 0;
-		while (ft_isdigit(line[i]) && start < 3)
-			color[start++] = line[i++];
-		while (ft_isdigit(line[i]) || ft_iswhite_space(line[i]))
 			i++;
-		if (start == 0)
-			close_game(game, NO_BG_COLOR);
-		color[start] = '\0';
+		color = validate_rgb(game, line, &i);
 		if (j == 0)
-			bg->red = ft_atoi(color);
+			bg->red = color;
 		if (j == 1)
-			bg->green = ft_atoi(color);
+			bg->green = color;
 		if (j == 2)
-			bg->blue = ft_atoi(color);
-		i++;
+			bg->blue = color;
 	}
 }

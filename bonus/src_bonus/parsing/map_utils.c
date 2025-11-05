@@ -1,4 +1,4 @@
-#include "../../includes/cub.h"
+#include "../../includes_bonus/cub.h"
 
 int	get_number_lines_map(t_mapi *map)
 {
@@ -72,4 +72,55 @@ int	find_valid_line(char *line)
 	if (!ft_isascii(line[i]) && !ft_iswhite_space(line[i]))
 		return (0);
 	return (1);
+}
+
+int	validate_rgb(t_game *game, char *line, int *i)
+{
+	char	*str;
+	int		j;
+
+	j = 0;
+	if (line[*i] == ',')
+	{
+		free(line);
+		close_game(game, INVALID_TEXTURE);
+	}
+	while (ft_isdigit(line[*i]))
+	{
+		j++;
+		*i += 1;
+	}
+	str = ft_substr(line, *i - j, j);
+	if (ft_strlen(str) > 3)
+	{
+		free(line);
+		free(str);
+		close_game(game, INVALID_TEXTURE);
+	}
+	return (rgb_helper(game, str, line, i));
+}
+
+int	rgb_helper(t_game *game, char *str, char *line, int *i)
+{
+	int	value;
+
+	value = ft_atoi(str);
+	free(str);
+	if (value > 255 || value < 0)
+	{
+		free(line);
+		close_game(game, INVALID_TEXTURE);
+	}
+	while (line[*i] && line[*i] != ',')
+	{
+		if (ft_isascii(line[*i]) && !ft_iswhite_space(line[*i]))
+		{
+			free(line);
+			close_game(game, INVALID_TEXTURE);
+		}
+		*i += 1;
+	}
+	if (line[*i] == ',')
+		*i += 1;
+	return (value);
 }
