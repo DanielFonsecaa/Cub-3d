@@ -63,7 +63,7 @@ void	put_pixel_minimap(int x, int y, int color, t_game *game)
 	game->data[index + 2] = (color >> 16) & 0xFF;
 }
 
-void	draw_square(int x, int y, int size, int color, t_game *game)
+void	draw_square(int x, int y, int size, t_game *game)
 {
 	int	column;
 	int	row;
@@ -75,7 +75,7 @@ void	draw_square(int x, int y, int size, int color, t_game *game)
 		while (row < size)
 		{
 			if (is_inside_square(x + row, y + column))
-				put_pixel_minimap(x + row, y + column, color, game);
+				put_pixel_minimap(x + row, y + column, BLUE, game);
 			row++;
 		}
 		column++;

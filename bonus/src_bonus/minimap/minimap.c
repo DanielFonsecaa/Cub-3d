@@ -1,17 +1,17 @@
 #include "../../includes_bonus/cub.h"
 
-void	draw_player(t_game *game, int cx, int cy, int r, int color)
+void	draw_player(t_game *game, int cx, int cy, int color)
 {
 	int	dy;
 	int	dx;
 
-	dy = -r -1;
-	while (++dy <= r)
+	dy = -PLAYER_R -1;
+	while (++dy <= PLAYER_R)
 	{
-		dx = -r;
-		while (++dx <= r)
+		dx = -PLAYER_R;
+		while (++dx <= PLAYER_R)
 		{
-			if (dx * dx + dy * dy <= r * r)
+			if (dx * dx + dy * dy <= PLAYER_R * PLAYER_R)
 				if (is_inside_square(cx + dx, cy + dy))
 					put_pixel_minimap(cx + dx, cy + dy, color, game);
 		}
@@ -31,7 +31,7 @@ void	draw_minimap(t_game *game)
 	draw_map_window(game, size_x, size_y);
 	px = MM_ORG_X + (MM_RADIUS * MM_TILE) + (MM_TILE - 4) / 2;
 	py = MM_ORG_Y + (MM_RADIUS * MM_TILE) + (MM_TILE - 4) / 2;
-	draw_player(game, px, py, 7, GREEN);
+	draw_player(game, px, py, GREEN);
 }
 
 static inline int	in_bounds(t_game *g, int mx, int my)
@@ -65,7 +65,7 @@ void	draw_map_window(t_game *game, int px, int py)
 			{
 				screen_x = MM_ORG_X + (mx - (px - MM_RADIUS)) * MM_TILE;
 				screen_y = MM_ORG_Y + (my - (py - MM_RADIUS)) * MM_TILE;
-				draw_square(screen_x, screen_y, MM_TILE, BLUE, game);
+				draw_square(screen_x, screen_y, MM_TILE, game);
 			}
 		}
 	}
@@ -85,7 +85,7 @@ void	draw_map(t_game *game)
 		while (map[y][++x])
 		{
 			if (map[y][x] == '1')
-				draw_square(x * BLOCK, y * BLOCK, BLOCK, BLUE, game);
+				draw_square(x * BLOCK, y * BLOCK, BLOCK, game);
 		}
 	}
 }

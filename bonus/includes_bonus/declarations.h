@@ -35,6 +35,7 @@
 # define MM_H         176
 # define MM_ORG_X     10
 # define MM_ORG_Y     10
+# define PLAYER_R     7
 
 # define EXT ".cub"
 

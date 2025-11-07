@@ -88,12 +88,13 @@ void	put_pixel_safe(int x, int y, int color, t_game *game);
 
 //minimap
 void	draw_minimap(t_game *game);
-void	draw_square(int x, int y, int size, int color, t_game *game);
+void	draw_square(int x, int y, int size, t_game *game);
 void	draw_map(t_game *game);
 void	put_pixel_minimap(int x, int y, int color, t_game *game);
 void	draw_map_window(t_game *game, int px, int py);
 void	fill_mm_background(t_game *game, int cx, int cy, int r);
 void	mm_circle(t_game *game);
 int		is_inside_square(int x, int y);
+void	draw_player(t_game *game, int cx, int cy, int color);
 
 #endif
