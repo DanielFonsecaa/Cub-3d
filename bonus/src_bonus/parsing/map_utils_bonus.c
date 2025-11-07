@@ -1,4 +1,4 @@
-#include "../../includes_bonus/cub.h"
+#include "../../includes_bonus/cub_bonus.h"
 
 int	get_number_lines_map(t_mapi *map)
 {

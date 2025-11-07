@@ -1,4 +1,4 @@
-#include "../includes_bonus/cub.h"
+#include "../includes_bonus/cub_bonus.h"
 
 int	close_and_printf(t_game *game)
 {

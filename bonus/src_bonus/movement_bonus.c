@@ -1,4 +1,4 @@
-#include "../includes_bonus/cub.h"
+#include "../includes_bonus/cub_bonus.h"
 
 bool	touch(double px, double py, t_game *game)
 {

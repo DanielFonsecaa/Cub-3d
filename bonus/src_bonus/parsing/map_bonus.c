@@ -1,4 +1,4 @@
-#include "../../includes_bonus/cub.h"
+#include "../../includes_bonus/cub_bonus.h"
 
 void	parsing(t_game *game, char *map_name)
 {

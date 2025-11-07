@@ -1,4 +1,4 @@
-#include "../../includes_bonus/cub.h"
+#include "../../includes_bonus/cub_bonus.h"
 
 void	draw_line(t_player *player, t_game *game, t_plane *plane, int i)
 {

@@ -1,4 +1,4 @@
-#include "../../includes_bonus/cub.h"
+#include "../../includes_bonus/cub_bonus.h"
 
 void	set_configure(t_game *g, t_ray *r, int i, t_tex *t)
 {

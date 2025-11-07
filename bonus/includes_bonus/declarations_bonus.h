@@ -1,7 +1,7 @@
 #ifndef DECLARATIONS_H
 # define DECLARATIONS_H
 
-# include "cub.h"
+# include "cub_bonus.h"
 
 # define WIDTH 1280
 # define HEIGHT 720

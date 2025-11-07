@@ -1,4 +1,4 @@
-#include "../includes_bonus/cub.h"
+#include "../includes_bonus/cub_bonus.h"
 
 static int	mouse_hook(int x, int y, t_game *game)
 {

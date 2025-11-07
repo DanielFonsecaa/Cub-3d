@@ -1,7 +1,7 @@
 #ifndef STRUCTS_H
 # define STRUCTS_H
 
-# include "cub.h"
+# include "cub_bonus.h"
 # include <stdbool.h>
 
 typedef struct s_player

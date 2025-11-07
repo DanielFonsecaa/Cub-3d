@@ -15,8 +15,8 @@
 # include "../../lib/libft/libft/libft.h"
 
 //	Custom headers
-# include "structs.h"
-# include "declarations.h"
+# include "structs_bonus.h"
+# include "declarations_bonus.h"
 
 //parsing
 void	parsing(t_game *game, char *map_name);

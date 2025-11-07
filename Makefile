@@ -51,20 +51,21 @@ HEADERS					= $(INC_PATH)/cub.h
 BONUS_SRC_PATH		= bonus/src_bonus
 BONUS_INC_PATH		= bonus/includes_bonus
 BONUS_BUILD_PATH	= bonus/.build_bonus
-BONUS_FILES			= main.c \
-					  parsing/assets.c \
-					  parsing/map.c \
-					  parsing/map_utils.c \
-					  parsing/validate.c \
-					  minimap/minimap.c \
-					  minimap/minimap_helper.c \
-					  raycast/draw.c \
-					  raycast/rendering.c \
-					  raycast/rendering_helper.c \
-					  free.c \
-					  game.c \
-					  movement.c \
-					  player.c
+
+BONUS_FILES			= main_bonus.c \
+					  parsing/assets_bonus.c \
+					  parsing/map_bonus.c \
+					  parsing/map_utils_bonus.c \
+					  parsing/validate_bonus.c \
+					  minimap/minimap_bonus.c \
+					  minimap/minimap_helper_bonus.c \
+					  raycast/draw_bonus.c \
+					  raycast/rendering_bonus.c \
+					  raycast/rendering_helper_bonus.c \
+					  free_bonus.c \
+					  game_bonus.c \
+					  movement_bonus.c \
+					  player_bonus.c
 
 BONUS_SRC			= $(addprefix $(BONUS_SRC_PATH)/, $(BONUS_FILES))
 BONUS_OBJS			= $(BONUS_SRC:$(BONUS_SRC_PATH)/%.c=$(BONUS_BUILD_PATH)/%.o)

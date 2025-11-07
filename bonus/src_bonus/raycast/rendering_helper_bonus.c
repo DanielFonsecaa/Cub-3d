@@ -1,4 +1,4 @@
-#include "../../includes_bonus/cub.h"
+#include "../../includes_bonus/cub_bonus.h"
 
 t_tex	*side_gt_zero(t_game *g, t_ray *r, t_player *p)
 {
