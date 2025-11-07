@@ -25,6 +25,7 @@ void	parsing(t_game *game, char *map_name)
 	game->grid = map;
 	fill_map(&game->grid, &flag);
 	close(map.fd);
+	find_collectables_and_doors(game);
 	validate(game, &flag);
 }
 

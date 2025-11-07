@@ -1,5 +1,5 @@
-#ifndef CUB_H
-# define CUB_H
+#ifndef CUB_BONUS_H
+# define CUB_BONUS_H
 
 //	C libraries
 # include <../X11/keysym.h>
@@ -47,6 +47,7 @@ void	valid_name(t_game *game, t_mapi *map, char *map_name);
 void	validate(t_game *game, int *invalid_map);
 void	validate_map(t_game *game);
 void	validade_player(t_game *game, char **map, int x, int y);
+void	validade_door(t_game *game, int x, int y);
 
 //utils
 void	skip_file_lines(t_mapi *map);
@@ -96,5 +97,10 @@ void	fill_mm_background(t_game *game, int cx, int cy, int r);
 void	mm_circle(t_game *game);
 int		is_inside_square(int x, int y);
 void	draw_player(t_game *game, int cx, int cy, int color);
+
+//collectables
+void	find_collectables_and_doors(t_game *game);
+void	add_collect_or_door(t_game *game, int x, int y, int *n_collect);
+void	find_n_collect(t_game *game);
 
 #endif

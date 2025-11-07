@@ -28,10 +28,10 @@ void	validate_map(t_game *game)
 		x = -1;
 		while (++x < (int)ft_strlen(game->grid.map[y]))
 		{
-			if (game->grid.map[y][x] == '1'
+			if (game->grid.map[y][x] == '1' || game->grid.map[y][x] == 'D'
 				|| ft_iswhite_space(game->grid.map[y][x]))
 				continue ;
-			if (game->grid.map[y][x] == '0'
+			if (game->grid.map[y][x] == '0' || game->grid.map[y][x] == 'C'
 				|| ft_strchr("NWES", game->grid.map[y][x]))
 				validate_cell(game, y, x, &flag);
 			else

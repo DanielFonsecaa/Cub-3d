@@ -57,6 +57,7 @@ BONUS_FILES			= main_bonus.c \
 					  parsing/map_bonus.c \
 					  parsing/map_utils_bonus.c \
 					  parsing/validate_bonus.c \
+					  parsing/collect_bonus.c \
 					  minimap/minimap_bonus.c \
 					  minimap/minimap_helper_bonus.c \
 					  raycast/draw_bonus.c \

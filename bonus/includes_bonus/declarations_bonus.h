@@ -1,5 +1,5 @@
-#ifndef DECLARATIONS_H
-# define DECLARATIONS_H
+#ifndef DECLARATIONS_BONUS_H
+# define DECLARATIONS_BONUS_H
 
 # include "cub_bonus.h"
 
@@ -18,13 +18,6 @@
 # define LEFT 65361
 # define RIGHT 65363
 # define PI 3.14159265358979323846264338327950288419716939937510
-/* 
-# define MM_TILE    8
-# define MM_RADIUS  8
-# define MM_W       136
-# define MM_H       136
-# define MM_ORG_X   10
-# define MM_ORG_Y   10 */
 
 # define MM_BASE_TILE 8
 # define MM_ZOOM      2      
@@ -57,5 +50,12 @@
 # define MAP_NOT_SET "Error\nMap inexistence\n"
 # define NO_BG_COLOR "Error\nMap has no floor or cealing colors\n"
 # define NO_PLAYER "Error\nPlayer position not initialized\n"
+# define NO_COLLECTABLES "Error\nMap has no collectables\n"
+# define NO_EXIT "Error\nMap has no exit\n"
+# define HAS_EXIT_ALREADY "Error\nMap has more then 1 exit\n"
+# define INVALID_DOOR "Error\nInvalid door position\n"
+# define ASSET_LOAD_FAIL "Error\nInvalid collectable texture\n"
+
 # define TESTE "TESTE\n"
+
 #endif

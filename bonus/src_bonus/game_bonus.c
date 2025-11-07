@@ -97,6 +97,7 @@ void	fill_background(t_game *game)
 
 void	init_textures(t_game *g)
 {
+	//init_collectables(g);
 	g->north.img = mlx_xpm_file_to_image(g->canvas.mlx, g->north.path,
 			&g->north.width, &g->north.height);
 	if (!g->north.img)
@@ -122,3 +123,76 @@ void	init_textures(t_game *g)
 	g->east.data = mlx_get_data_addr(g->east.img, &g->east.bpp,
 			&g->east.size_line, &g->east.endian);
 }
+
+/* void	init_collectables(t_game *game)
+{
+	const int frame_count = 6;
+	const char *paths[6] = {
+		"textures/carrot/carrot_1.xpm", "textures/carrot/carrot_2.xpm",
+		"textures/carrot/carrot_3.xpm", "textures/carrot/carrot_4.xpm",
+		"textures/carrot/carrot_5.xpm", "textures/carrot/carrot_6.xpm"
+	};
+	game->collect_frame_count = frame_count;
+	game->collect_frames = ft_calloc(frame_count, sizeof(t_tex));
+	if (!game->collect_frames)
+		close_game(game, MISSING_ASSETS);
+	if (!load_textures(game, game->collect_frames, frame_count, paths))
+		close_game(game, MISSING_ASSETS);
+	if (game->collectables && game->n_collectables > 0)
+	{
+		int i = 0;
+		while (i < game->n_collectables)
+		{
+			game->collectables[i].frames = game->collect_frames;
+			i++;
+		}
+	}
+}
+ */
+
+ /* 
+int	load_texture(t_game *game, t_tex *tex, const char *path)
+{
+	int w;
+	int h;
+
+	if (!game || !tex || !path)
+		return (0);
+	tex->img = mlx_xpm_file_to_image(game->canvas.mlx, (char *)path, &w, &h);
+	if (!tex->img)
+		return (0);
+	tex->data = mlx_get_data_addr(tex->img, &tex->bpp, &tex->size_line, &tex->endian);
+	tex->width = w;
+	tex->height = h;
+	tex->path = ft_strdup(path);
+	if (!tex->path)
+		return (0);
+	return (1);
+}
+
+int	load_textures(t_game *game, t_tex *arr, int n, const char **paths)
+{
+	int i;
+
+	if (!game || !arr || !paths || n <= 0)
+		return (0);
+	i = 0;
+	while (i < n)
+	{
+		if (!load_texture(game, &arr[i], paths[i]))
+		{
+			while (--i >= 0)
+			{
+				if (arr[i].img)
+					mlx_destroy_image(game->canvas.mlx, arr[i].img);
+				free(arr[i].path);
+				arr[i].img = NULL;
+				arr[i].path = NULL;
+			}
+			return (0);
+		}
+		i++;
+	}
+	return (1);
+}
+ */

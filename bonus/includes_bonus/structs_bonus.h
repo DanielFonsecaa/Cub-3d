@@ -1,5 +1,5 @@
-#ifndef STRUCTS_H
-# define STRUCTS_H
+#ifndef STRUCTS_BONUS_H
+# define STRUCTS_BONUS_H
 
 # include "cub_bonus.h"
 # include <stdbool.h>
@@ -109,6 +109,20 @@ typedef struct s_plane
 	double		raydy;
 }	t_plane;
 
+typedef struct s_collect
+{
+	int		x;
+	int		y;
+	bool	is_collected;
+//	t_tex	*frames;
+}	t_collect;
+
+typedef struct s_bunny
+{
+	int		x;
+	int		y;
+}	t_bunny;
+
 typedef struct s_game
 {
 	char		*data;
@@ -119,6 +133,11 @@ typedef struct s_game
 	int			assets_ready;
 	int			floor_set;
 	int			ceiling_set;
+	int			n_collectables;
+	bool		has_door;
+	bool		end_game;
+	t_bunny		exit;
+	t_collect	*collectables;
 	t_color		floor;
 	t_color		cealing;
 	t_player	player;
@@ -130,6 +149,8 @@ typedef struct s_game
 	t_tex		west;
 	t_mapi		grid;
 	t_ray		ray;
+//	t_tex		*collect_frames;
+//	int			collect_frame_count;
 }	t_game;
 
 #endif
