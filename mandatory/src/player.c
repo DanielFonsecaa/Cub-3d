@@ -66,7 +66,7 @@ void	move_wasd(t_game *game, double sin, double cos)
 	if (game->player.key_down)
 		go_down(game, (new_sin * -1), (new_cos * -1));
 	if (game->player.key_left)
-		go_left(game, sin, (new_cos * -1));
+		go_left(game, new_sin, (new_cos * -1));
 	if (game->player.key_right)
 		go_right(game, (new_sin * -1), new_cos);
 }
