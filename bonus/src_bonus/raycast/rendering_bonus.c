@@ -50,7 +50,6 @@ t_tex	*compute_per(t_game *g, t_ray *r, t_player *p)
 		else
 			r->perp_dist = (boundary - p->y) / (r->sin_angle);
 	}
-	/* Prefer door texture if we hit a door cell and have a door texture loaded */
 	if (r->cell == 'D' && g->door.img)
 		texture = &g->door;
 	if (r->perp_dist < 1e-6)
