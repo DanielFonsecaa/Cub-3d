@@ -95,6 +95,8 @@ typedef struct s_ray
 	int			t_idx;
 	int			color;
 
+	char			cell;
+
 }	t_ray;
 
 typedef struct s_plane
@@ -147,6 +149,7 @@ typedef struct s_game
 	t_tex		south;
 	t_tex		east;
 	t_tex		west;
+	t_tex		door;
 	t_mapi		grid;
 	t_ray		ray;
 //	t_tex		*collect_frames;

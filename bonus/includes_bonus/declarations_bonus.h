@@ -15,6 +15,7 @@
 # define A 97
 # define S 115
 # define D 100
+# define E 101
 # define LEFT 65361
 # define RIGHT 65363
 # define PI 3.14159265358979323846264338327950288419716939937510

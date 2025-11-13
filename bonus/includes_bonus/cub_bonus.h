@@ -41,7 +41,7 @@ void	start(t_game *game);
 int		game_loop(t_game *game);
 bool	touch(double px, double py, t_game *game);
 
-//validade
+//validate
 void	validate_cell(t_game *game, int column_pos, int row_pos, int *flag);
 void	valid_name(t_game *game, t_mapi *map, char *map_name);
 void	validate(t_game *game, int *invalid_map);
@@ -70,6 +70,7 @@ void	go_up(t_game *game, double sin, double cos);
 void	go_down(t_game *game, double sin, double cos);
 void	go_left(t_game *game, double sin, double cos);
 void	go_right(t_game *game, double sin, double cos);
+void	open_door(t_game *game);
 
 //rendering
 void	draw_line(t_player *player, t_game *game, t_plane *plane, int i);

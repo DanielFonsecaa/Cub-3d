@@ -1,4 +1,5 @@
-     SO           textures/south.xpm                
+     SO           textures/south.xpm
+DO textures/door.xpm    
 WE textures/west.xpm
 NO    textures/north.xpm    
 F            111         ,                    111,  111
@@ -8,7 +9,7 @@ C 0,255,232,
 111111111111111     
 10000000000S001       
 10000000000C001    
-100000100000001
+100000100001011
 1000C0D0C000001
 100000100000001
 111111111111111

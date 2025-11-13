@@ -39,6 +39,8 @@ void	close_canvas(t_game *game)
 		mlx_destroy_image(game->canvas.mlx, game->west.img);
 	if (game->east.img)
 		mlx_destroy_image(game->canvas.mlx, game->east.img);
+	if (game->door.img)
+		mlx_destroy_image(game->canvas.mlx, game->door.img);
 	if (game->canvas.img)
 		mlx_destroy_image(game->canvas.mlx, game->canvas.img);
 	if (game->canvas.win)
@@ -60,4 +62,6 @@ void	close_textures(t_game *game)
 		free(game->west.path);
 	if (game->east.path)
 		free(game->east.path);
+	if (game->door.path)
+		free(game->door.path);
 }

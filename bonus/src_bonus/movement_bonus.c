@@ -19,9 +19,9 @@ bool	touch(double px, double py, t_game *game)
 	row_len = ft_strlen(game->grid.map[y]);
 	if (x < 0 || (size_t)x >= row_len)
 		return (true);
-	return (game->grid.map[y][x] == '1');
+	return (game->grid.map[y][x] == '1' || game->grid.map[y][x] == 'D');
 }
-
+//AVISO DDA-FONS - SOLUCAO TEMPORARIA PARA CRIAR COLISAO COM Ax PORTA, NO RETURN ACIMA
 void	go_up(t_game *game, double sin, double cos)
 {
 	double	next_x;

@@ -122,6 +122,14 @@ void	init_textures(t_game *g)
 		close_game(g, "Error\nMlx failed to load east\n");
 	g->east.data = mlx_get_data_addr(g->east.img, &g->east.bpp,
 			&g->east.size_line, &g->east.endian);
+	if (g->door.path)
+	{
+		g->door.img = mlx_xpm_file_to_image(g->canvas.mlx, g->door.path,
+				&g->door.width, &g->door.height);
+		if (g->door.img)
+			g->door.data = mlx_get_data_addr(g->door.img, &g->door.bpp,
+					&g->door.size_line, &g->door.endian);
+	}
 }
 
 /* void	init_collectables(t_game *game)

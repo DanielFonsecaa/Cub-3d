@@ -28,6 +28,8 @@ void	set_direction_texture(t_game *game, char *line, int i)
 		game->assets_ready++;
 	if (set_texture_path(&game->east, line, "EA", i))
 		game->assets_ready++;
+	if (set_texture_path(&game->door, line, "DO", i))
+		(void)0;
 }
 
 int	set_texture_path(t_tex *texture, char *line, char *dir, int i)
