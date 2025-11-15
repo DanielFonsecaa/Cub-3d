@@ -7,7 +7,112 @@ void	draw_line(t_player *player, t_game *game, t_plane *plane, int i)
 	init_r_val(game, player, plane->raydx, plane->raydy);
 	dda_loop(game, &game->ray);
 	texture = compute_per(game, &game->ray, &game->player);
+	if (i >= 0 && i < WIDTH)
+		game->zbuffer[i] = game->ray.perp_dist;
 	compute_tex(game, &game->ray, i, texture);
+}
+
+static inline int	clamp_int(int v, int lo, int hi)
+{
+	if (v < lo) return lo;
+	if (v > hi) return hi;
+	return v;
+}
+
+static inline int    tex_read_color(t_tex *t, int tx, int ty)
+{
+	int idx;
+	unsigned char *d;
+	int color = 0x000000;
+	if (!t || !t->data) return color;
+	if (tx < 0)
+		tx = 0;
+	if (tx >= t->width)
+		tx = t->width - 1;
+	if (ty < 0)
+		ty = 0;
+	if (ty >= t->height)
+		ty = t->height - 1;
+	idx = ty * t->size_line + tx * (t->bpp / 8);
+	if (t->bpp == 32)
+		color = *(int *)(t->data + idx);
+	else if (t->bpp == 24)
+	{
+		d = (unsigned char *)(t->data + idx);
+		color = d[0] | (d[1] << 8) | (d[2] << 16);
+	}
+	return color;
+}
+
+void    render_collectables(t_game *g)
+{
+	int y;
+	int x;
+	t_tex *t;
+	double invDet;
+	double relx, rely, transX, transY;
+	int screenX;
+	double proj_plane;
+	int sprH, sprW;
+	int startX, endX, startY, endY;
+
+	if (!g || !g->collect.img || !g->collect.data)
+		return;
+	proj_plane = (WIDTH / 2.0) / tan(FOV / 2.0);
+	invDet = 1.0 / (g->plane.planex * g->plane.diry - g->plane.dirx * g->plane.planey);
+	t = &g->collect;
+	y = 0;
+	while (g->grid.map[y])
+	{
+		x = 0;
+		while (g->grid.map[y][x])
+		{
+			if (g->grid.map[y][x] == 'C')
+			{
+				double sx = (x + 0.5) * BLOCK;
+				double sy = (y + 0.5) * BLOCK;
+				relx = sx - g->player.x;
+				rely = sy - g->player.y;
+				transX = invDet * ( g->plane.diry * relx - g->plane.dirx * rely);
+				transY = invDet * (-g->plane.planey * relx + g->plane.planex * rely);
+				if (transY > 1e-6)
+				{
+					screenX = (int)((WIDTH / 2.0) * (1.0 + transX / transY));
+					sprH = (int)fabs((BLOCK / transY) * proj_plane);
+					sprW = sprH;
+					startY = -sprH / 2 + HEIGHT / 2;
+					endY =  sprH / 2 + HEIGHT / 2;
+					startY = clamp_int(startY, 0, HEIGHT - 1);
+					endY   = clamp_int(endY, 0, HEIGHT - 1);
+					startX = -sprW / 2 + screenX;
+					endX   =  sprW / 2 + screenX;
+					if (startX < 0) startX = 0;
+					if (endX >= WIDTH) endX = WIDTH - 1;
+					int stripe = startX;
+					while (stripe <= endX)
+					{
+						int texX = (int)((double)(stripe - (-sprW / 2 + screenX)) * t->width / sprW);
+						if (transY < g->zbuffer[stripe])
+						{
+							int ypix = startY;
+							while (ypix <= endY)
+							{
+								int d = ypix - (-sprH / 2 + HEIGHT / 2);
+								int texY = (int)((double)d * t->height / sprH);
+								int col = tex_read_color(t, texX, texY);
+								if (col != 0x000000)
+									put_pixel(stripe, ypix, col, g);
+								ypix++;
+							}
+						}
+						stripe++;
+					}
+				}
+			}
+			x++;
+		}
+		y++;
+	}
 }
 
 void	compute_tex(t_game *g, t_ray *r, int i, t_tex *t)

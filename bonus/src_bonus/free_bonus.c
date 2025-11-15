@@ -22,6 +22,10 @@ int	close_game(t_game *game, char *msg)
 			free(game->grid.map[i++]);
 		free(game->grid.map);
 	}
+	if (game->zbuffer)
+		free(game->zbuffer);
+	if (game->collectables)
+		free(game->collectables);
 	if (!msg)
 		msg = CLOSE_GAME;
 	ft_printf(msg);
@@ -41,6 +45,8 @@ void	close_canvas(t_game *game)
 		mlx_destroy_image(game->canvas.mlx, game->east.img);
 	if (game->door.img)
 		mlx_destroy_image(game->canvas.mlx, game->door.img);
+	if (game->collect.img)
+		mlx_destroy_image(game->canvas.mlx, game->collect.img);
 	if (game->canvas.img)
 		mlx_destroy_image(game->canvas.mlx, game->canvas.img);
 	if (game->canvas.win)
@@ -64,4 +70,6 @@ void	close_textures(t_game *game)
 		free(game->east.path);
 	if (game->door.path)
 		free(game->door.path);
+	if (game->collect.path)
+		free(game->collect.path);
 }

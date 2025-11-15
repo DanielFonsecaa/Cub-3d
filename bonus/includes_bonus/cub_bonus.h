@@ -80,6 +80,7 @@ void	compute_tex(t_game *g, t_ray *r,
 			int i, t_tex *t);
 t_tex	*compute_per(t_game *g, t_ray *r, t_player *p);
 t_tex	*side_gt_zero(t_game *g, t_ray *r, t_player *p);
+void	render_collectables(t_game *g);
 
 //draw
 void	set_configure(t_game *g, t_ray *r, int i, t_tex *t);
@@ -103,5 +104,6 @@ void	draw_player(t_game *game, int cx, int cy, int color);
 void	find_collectables_and_doors(t_game *game);
 void	add_collect_or_door(t_game *game, int x, int y, int *n_collect);
 void	find_n_collect(t_game *game);
+void	update_collectables(t_game *game);
 
 #endif

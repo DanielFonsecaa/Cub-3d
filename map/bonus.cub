@@ -1,5 +1,6 @@
      SO           textures/south.xpm
-DO textures/door.xpm    
+DO textures/door.xpm
+OB textures/carrot/carrot_1.xpm
 WE textures/west.xpm
 NO    textures/north.xpm    
 F            111         ,                    111,  111

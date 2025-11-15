@@ -152,6 +152,8 @@ typedef struct s_game
 	t_tex		door;
 	t_mapi		grid;
 	t_ray		ray;
+	t_tex		collect;
+	double		*zbuffer;
 //	t_tex		*collect_frames;
 //	int			collect_frame_count;
 }	t_game;

@@ -67,6 +67,41 @@ void	draw_map_window(t_game *game, int px, int py)
 				screen_y = MM_ORG_Y + (my - (py - MM_RADIUS)) * MM_TILE;
 				draw_square(screen_x, screen_y, MM_TILE, game);
 			}
+			else if (game->grid.map[my][mx] == 'C')
+			{
+				int cx = MM_ORG_X + (mx - (px - MM_RADIUS)) * MM_TILE + MM_TILE/2;
+				int cy = MM_ORG_Y + (my - (py - MM_RADIUS)) * MM_TILE + MM_TILE/2;
+				int dx = -2;
+				int dy;
+				while (dx <= 2)
+				{
+					dy = -2;
+					while (dy <= 2)
+					{
+						if (is_inside_square(cx + dx, cy + dy))
+							put_pixel_minimap(cx + dx, cy + dy, RED, game);
+						dy++;
+					}
+					dx++;
+				}
+			}
+			else if (game->grid.map[my][mx] == 'D')
+			{
+				screen_x = MM_ORG_X + (mx - (px - MM_RADIUS)) * MM_TILE;
+				screen_y = MM_ORG_Y + (my - (py - MM_RADIUS)) * MM_TILE;
+				int x, y;
+				for (y = 0; y < MM_TILE; y++)
+				{
+					for (x = 0; x < MM_TILE; x++)
+					{
+						if (y == 0 || y == MM_TILE-1 || x == 0 || x == MM_TILE-1)
+						{
+							if (is_inside_square(screen_x + x, screen_y + y))
+								put_pixel_minimap(screen_x + x, screen_y + y, GREEN, game);
+						}
+					}
+				}
+			}
 		}
 	}
 }

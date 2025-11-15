@@ -29,6 +29,9 @@ void	start(t_game *game)
 			&game->size_line, &game->endian);
 	if (!game->data)
 		close_game(game, INVALID_TEXTURE);
+	game->zbuffer = (double *)malloc(sizeof(double) * WIDTH);
+	if (!game->zbuffer)
+		close_game(game, MISSING_ASSETS);
 	mlx_hook(game->canvas.win, 2, 1L << 0, key_press, game);
 	mlx_hook(game->canvas.win, 3, 1L << 1, key_release, &game->player);
 	mlx_loop_hook(game->canvas.mlx, game_loop, game);
@@ -60,6 +63,8 @@ int	game_loop(t_game *game)
 		i++;
 	}
 	game->plane = plane;
+	render_collectables(game);
+	update_collectables(game);
 	draw_minimap(game);
 	mlx_put_image_to_window(game->canvas.mlx, game->canvas.win,
 		game->canvas.img, 0, 0);
@@ -92,6 +97,58 @@ void	fill_background(t_game *game)
 		x = -1;
 		while (++x < WIDTH)
 			put_pixel_safe(x, y, floor_color, game);
+	}
+}
+
+static int in_bounds_tile(t_game *g, int tx, int ty)
+{
+	size_t len;
+
+	if (ty < 0 || ty >= g->grid.height)
+		return (0);
+	len = ft_strlen(g->grid.map[ty]);
+	if (tx < 0 || (size_t)tx >= len)
+		return (0);
+	return (1);
+}
+
+void    update_collectables(t_game *game)
+{
+	int px;
+	int py;
+	int i;
+
+	if (!game || !game->grid.map)
+		return ;
+	px = (int)(game->player.x / BLOCK);
+	py = (int)(game->player.y / BLOCK);
+	if (in_bounds_tile(game, px, py) && game->grid.map[py][px] == 'C')
+	{
+		i = 0;
+		while (i < game->n_collectables)
+		{
+			if (!game->collectables[i].is_collected
+				&& game->collectables[i].x == px
+				&& game->collectables[i].y == py)
+			{
+				game->collectables[i].is_collected = true;
+				if (game->n_collectables > 0)
+					game->n_collectables--;
+				game->grid.map[py][px] = '0';
+				break ;
+			}
+			i++;
+		}
+	}
+	if (game->n_collectables == 0)
+	{
+		/* Open the exit door once all collectables are gathered */
+		if (in_bounds_tile(game, game->exit.x, game->exit.y)
+			&& game->grid.map[game->exit.y][game->exit.x] == 'D')
+			game->grid.map[game->exit.y][game->exit.x] = '0';
+		/* Win if player stands on exit */
+		if (px == game->exit.x && py == game->exit.y)
+			close_game(game, "You win!\n");
 	}
 }
 
@@ -130,9 +187,17 @@ void	init_textures(t_game *g)
 			g->door.data = mlx_get_data_addr(g->door.img, &g->door.bpp,
 					&g->door.size_line, &g->door.endian);
 	}
+	if (g->collect.path)
+	{
+		g->collect.img = mlx_xpm_file_to_image(g->canvas.mlx, g->collect.path,
+				&g->collect.width, &g->collect.height);
+		if (g->collect.img)
+			g->collect.data = mlx_get_data_addr(g->collect.img, &g->collect.bpp,
+					&g->collect.size_line, &g->collect.endian);
+	}
 }
 
-/* void	init_collectables(t_game *game)
+ /* void	init_collectables(t_game *game)
 {
 	const int frame_count = 6;
 	const char *paths[6] = {
@@ -156,9 +221,9 @@ void	init_textures(t_game *g)
 		}
 	}
 }
- */
 
- /* 
+
+
 int	load_texture(t_game *game, t_tex *tex, const char *path)
 {
 	int w;
@@ -203,4 +268,4 @@ int	load_textures(t_game *game, t_tex *arr, int n, const char **paths)
 	}
 	return (1);
 }
- */
+  */
