@@ -43,7 +43,7 @@ static inline int    tex_read_color(t_tex *t, int tx, int ty)
 	}
 	return color;
 }
-
+// render_collectables IS NOT WORKING and is confusing
 void    render_collectables(t_game *g)
 {
 	int y;

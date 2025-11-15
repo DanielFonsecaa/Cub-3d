@@ -84,6 +84,7 @@ void	find_n_collect(t_game *game)
 	}
 	game->n_collectables = n_collect;
 }
+// THIS WILL NOT WORK, WHEN DOOR OPEN I THINK MAP UPDATES D TO 0
 
 void	validade_door(t_game *game, int x, int y)
 {

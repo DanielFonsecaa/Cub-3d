@@ -142,11 +142,9 @@ void    update_collectables(t_game *game)
 	}
 	if (game->n_collectables == 0)
 	{
-		/* Open the exit door once all collectables are gathered */
 		if (in_bounds_tile(game, game->exit.x, game->exit.y)
 			&& game->grid.map[game->exit.y][game->exit.x] == 'D')
 			game->grid.map[game->exit.y][game->exit.x] = '0';
-		/* Win if player stands on exit */
 		if (px == game->exit.x && py == game->exit.y)
 			close_game(game, "You win!\n");
 	}
@@ -154,7 +152,6 @@ void    update_collectables(t_game *game)
 
 void	init_textures(t_game *g)
 {
-	//init_collectables(g);
 	g->north.img = mlx_xpm_file_to_image(g->canvas.mlx, g->north.path,
 			&g->north.width, &g->north.height);
 	if (!g->north.img)

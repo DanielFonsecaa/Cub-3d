@@ -90,16 +90,20 @@ void	draw_map_window(t_game *game, int px, int py)
 				screen_x = MM_ORG_X + (mx - (px - MM_RADIUS)) * MM_TILE;
 				screen_y = MM_ORG_Y + (my - (py - MM_RADIUS)) * MM_TILE;
 				int x, y;
-				for (y = 0; y < MM_TILE; y++)
+				y = 0;
+				while (y < MM_TILE)
 				{
-					for (x = 0; x < MM_TILE; x++)
+					x = 0;
+					while (x < MM_TILE)
 					{
 						if (y == 0 || y == MM_TILE-1 || x == 0 || x == MM_TILE-1)
 						{
 							if (is_inside_square(screen_x + x, screen_y + y))
 								put_pixel_minimap(screen_x + x, screen_y + y, GREEN, game);
 						}
+						x++;
 					}
+					y++;
 				}
 			}
 		}
