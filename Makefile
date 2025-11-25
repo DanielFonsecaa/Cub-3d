@@ -53,6 +53,9 @@ BONUS_INC_PATH		= bonus/includes_bonus
 BONUS_BUILD_PATH	= bonus/.build_bonus
 
 BONUS_FILES			= main_bonus.c \
+					  collectables/collectables_bonus.c \
+					  collectables/collectables_helper_bonus.c \
+					  collectables/door_bonus.c \
 					  parsing/assets_bonus.c \
 					  parsing/map_bonus.c \
 					  parsing/map_utils_bonus.c \
@@ -188,6 +191,9 @@ libclean: fclean	## Remove libs
 
 val: re
 	@valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --tool=memcheck ./$(NAME) $(MAP)
+
+valb: bonus
+	@valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --tool=memcheck ./$(NAME_BONUS) $(MAP)
 
 re: libclean all	## Purge & Recompile
 

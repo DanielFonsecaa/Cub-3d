@@ -72,4 +72,24 @@ void	close_textures(t_game *game)
 		free(game->door.path);
 	if (game->collect.path)
 		free(game->collect.path);
+	close_collectables(game);
+}
+
+void	close_collectables(t_game *game)
+{
+	int	i;
+
+	i = 0;
+	while (i < game->collect_frame_count)
+	{
+		if (game->collect_frames[i].img && game->canvas.mlx)
+			mlx_destroy_image(game->canvas.mlx, game->collect_frames[i].img);
+		if (game->collect_frames[i].path)
+			free(game->collect_frames[i].path);
+		game->collect_frames[i].img = NULL;
+		game->collect_frames[i].path = NULL;
+		i++;
+	}
+	free(game->collect_frames);
+	game->collect_frames = NULL;
 }

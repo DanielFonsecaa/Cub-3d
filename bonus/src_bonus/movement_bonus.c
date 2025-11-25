@@ -21,7 +21,7 @@ bool	touch(double px, double py, t_game *game)
 		return (true);
 	return (game->grid.map[y][x] == '1' || game->grid.map[y][x] == 'D');
 }
-//AVISO DDA-FONS - SOLUCAO TEMPORARIA PARA CRIAR COLISAO COM Ax PORTA, NO RETURN ACIMA
+
 void	go_up(t_game *game, double sin, double cos)
 {
 	double	next_x;

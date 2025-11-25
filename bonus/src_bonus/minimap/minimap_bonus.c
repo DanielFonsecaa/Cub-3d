@@ -29,8 +29,8 @@ void	draw_minimap(t_game *game)
 	size_y = (int)(game->player.y / BLOCK);
 	mm_circle(game);
 	draw_map_window(game, size_x, size_y);
-	px = MM_ORG_X + (MM_RADIUS * MM_TILE) + (MM_TILE - 4) / 2;
-	py = MM_ORG_Y + (MM_RADIUS * MM_TILE) + (MM_TILE - 4) / 2;
+	px = MM_ORG_X + (MM_RAD * MM_TILE) + (MM_TILE - 4) / 2;
+	py = MM_ORG_Y + (MM_RAD * MM_TILE) + (MM_TILE - 4) / 2;
 	draw_player(game, px, py, GREEN);
 }
 
@@ -50,29 +50,34 @@ void	draw_map_window(t_game *game, int px, int py)
 {
 	int	mx;
 	int	my;
+	int	cx;
+	int	cy;
+	int	dx;
+	int	dy;
 	int	screen_x;
 	int	screen_y;
+	int	x;
+	int	y;
 
-	my = py - MM_RADIUS -1;
-	while (++my <= py + MM_RADIUS)
+	my = py - MM_RAD -1;
+	while (++my <= py + MM_RAD)
 	{
-		mx = px - MM_RADIUS -1;
-		while (++mx <= px + MM_RADIUS)
+		mx = px - MM_RAD -1;
+		while (++mx <= px + MM_RAD)
 		{
 			if (!in_bounds(game, mx, my))
 				continue ;
 			if (game->grid.map[my][mx] == '1')
 			{
-				screen_x = MM_ORG_X + (mx - (px - MM_RADIUS)) * MM_TILE;
-				screen_y = MM_ORG_Y + (my - (py - MM_RADIUS)) * MM_TILE;
+				screen_x = MM_ORG_X + (mx - (px - MM_RAD)) * MM_TILE;
+				screen_y = MM_ORG_Y + (my - (py - MM_RAD)) * MM_TILE;
 				draw_square(screen_x, screen_y, MM_TILE, game);
 			}
 			else if (game->grid.map[my][mx] == 'C')
 			{
-				int cx = MM_ORG_X + (mx - (px - MM_RADIUS)) * MM_TILE + MM_TILE/2;
-				int cy = MM_ORG_Y + (my - (py - MM_RADIUS)) * MM_TILE + MM_TILE/2;
-				int dx = -2;
-				int dy;
+				cx = MM_ORG_X + (mx - (px - MM_RAD)) * MM_TILE + MM_TILE / 2;
+				cy = MM_ORG_Y + (my - (py - MM_RAD)) * MM_TILE + MM_TILE / 2;
+				dx = -2;
 				while (dx <= 2)
 				{
 					dy = -2;
@@ -87,16 +92,15 @@ void	draw_map_window(t_game *game, int px, int py)
 			}
 			else if (game->grid.map[my][mx] == 'D')
 			{
-				screen_x = MM_ORG_X + (mx - (px - MM_RADIUS)) * MM_TILE;
-				screen_y = MM_ORG_Y + (my - (py - MM_RADIUS)) * MM_TILE;
-				int x, y;
+				screen_x = MM_ORG_X + (mx - (px - MM_RAD)) * MM_TILE;
+				screen_y = MM_ORG_Y + (my - (py - MM_RAD)) * MM_TILE;
 				y = 0;
 				while (y < MM_TILE)
 				{
 					x = 0;
 					while (x < MM_TILE)
 					{
-						if (y == 0 || y == MM_TILE-1 || x == 0 || x == MM_TILE-1)
+						if (y == 0 || y == MM_TILE - 1 || x == 0 || x == MM_TILE - 1)
 						{
 							if (is_inside_square(screen_x + x, screen_y + y))
 								put_pixel_minimap(screen_x + x, screen_y + y, GREEN, game);

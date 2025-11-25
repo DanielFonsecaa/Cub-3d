@@ -11,12 +11,10 @@ typedef struct s_player
 	double		angle;
 	double		angle_speed;
 	int			speed;
-
 	bool		key_up;
 	bool		key_down;
 	bool		key_left;
 	bool		key_right;
-
 	bool		left_rotate;
 	bool		right_rotate;
 }	t_player;
@@ -32,12 +30,12 @@ typedef struct s_tex
 {
 	void		*img;
 	char		*data;
+	char		*path;
 	int			width;
 	int			height;
 	int			bpp;
 	int			size_line;
 	int			endian;
-	char		*path;
 }	t_tex;
 
 typedef struct s_color
@@ -58,22 +56,30 @@ typedef struct s_mapi
 
 typedef struct s_ray
 {
+	int			map_x;
+	int			map_y;
+	int			step_x;
+	int			step_y;
+	int			side;
+	int			iter;
+	int			rows;
+	int			tex_x;
+	int			draw_start;
+	int			draw_end;
+	int			draw_pixels;
+	int			tex_x_flipped;
+	int			tex_y;
+	int			t_idx;
+	int			color;
+	char		cell;
 	double		cos_angle;
 	double		sin_angle;
 	double		eps;
 	double		angle;
 	double		delta_dist_x;
 	double		delta_dist_y;
-	int			map_x;
-	int			map_y;
-	int			step_x;
-	int			step_y;
 	double		side_dist_x;
 	double		side_dist_y;
-	int			side;
-	int			iter;
-	int			rows;
-	size_t		row_len;
 	double		perp_dist;
 	double		uncorredted_dist;
 	double		hit_x;
@@ -81,21 +87,12 @@ typedef struct s_ray
 	double		angle_diff;
 	double		proj_plane;
 	double		wall_hit;
-	int			tex_x;
 	double		orig_height;
 	double		orig_start_f;
 	double		orig_end_f;
-	int			draw_start;
-	int			draw_end;
-	int			draw_pixels;
 	double		tex_step;
 	double		tex_pos;
-	int			tex_x_flipped;
-	int			tex_y;
-	int			t_idx;
-	int			color;
-
-	char			cell;
+	size_t		row_len;
 
 }	t_ray;
 
@@ -113,49 +110,73 @@ typedef struct s_plane
 
 typedef struct s_collect
 {
-	int		x;
-	int		y;
-	bool	is_collected;
-//	t_tex	*frames;
+	int			x;
+	int			y;
+	bool		is_collected;
+	t_tex		*frames;
 }	t_collect;
 
 typedef struct s_bunny
 {
-	int		x;
-	int		y;
+	int			x;
+	int			y;
 }	t_bunny;
+
+typedef struct s_door
+{
+	int			x;
+	int			y;
+	bool		open;
+}	t_door;
+
+typedef struct s_sprite
+{
+	int			mx;
+	int			my;
+	int			screen_x;
+	int			start_x;
+	int			end_x;
+	int			start_y;
+	int			end_y;
+	int			spr_w;
+	int			spr_h;
+	double		trans_x;
+	double		trans_y;
+}	t_sprite;
 
 typedef struct s_game
 {
-	char		*data;
 	int			bpp;
 	int			size_line;
 	int			endian;
-	char		**map;
 	int			assets_ready;
 	int			floor_set;
 	int			ceiling_set;
 	int			n_collectables;
+	int			collect_frame_count;
+	int			n_doors;
+	char		*data;
+	char		**map;
 	bool		has_door;
 	bool		end_game;
-	t_bunny		exit;
-	t_collect	*collectables;
-	t_color		floor;
-	t_color		cealing;
-	t_player	player;
-	t_canvas	canvas;
-	t_plane		plane;
+	double		*zbuffer;
 	t_tex		north;
 	t_tex		south;
 	t_tex		east;
 	t_tex		west;
 	t_tex		door;
-	t_mapi		grid;
-	t_ray		ray;
 	t_tex		collect;
-	double		*zbuffer;
-//	t_tex		*collect_frames;
-//	int			collect_frame_count;
+	t_tex		*collect_frames;
+	t_ray		ray;
+	t_door		*doors;
+	t_mapi		grid;
+	t_bunny		exit;
+	t_color		floor;
+	t_color		cealing;
+	t_plane		plane;
+	t_canvas	canvas;
+	t_player	player;
+	t_collect	*collectables;
 }	t_game;
 
 #endif

@@ -28,9 +28,9 @@ void	find_skip_lines(t_mapi *map);
 void	handle_assets(t_game *game, t_mapi *map);
 void	get_textures(t_game *game, char *line);
 void	set_direction_texture(t_game *game, char *line, int i);
-int		set_texture_path(t_tex *texture, char *line, char *dir, int i);
 void	set_floor_cealing(t_game *game, char *line, int i);
 void	set_background_color(t_game *game, t_color *bg, int i, char *line);
+int		set_texture_path(t_tex *texture, char *line, char *dir, int i);
 int		validate_rgb(t_game *game, char *line, int *i);
 int		rgb_helper(t_game *game, char *str, char *line, int *i);
 
@@ -38,8 +38,15 @@ int		rgb_helper(t_game *game, char *str, char *line, int *i);
 void	init_textures(t_game *g);
 void	fill_background(t_game *game);
 void	start(t_game *game);
-int		game_loop(t_game *game);
+void	init_doors(t_game *game);
+void	update_doors_proximity(t_game *game, int tiles);
+void	auto_open_near_doors(t_game *game, int tiles);
 bool	touch(double px, double py, t_game *game);
+double	dist2(double ax, double ay, double bx, double by);
+int		in_bounds_tile(t_game *g, int tx, int ty);
+int		game_loop(t_game *game);
+int		tex_read_color(t_tex *tt, int tx, int ty);
+int		sprite_cmp(const void *a, const void *b);
 
 //validate
 void	validate_cell(t_game *game, int column_pos, int row_pos, int *flag);
@@ -50,9 +57,9 @@ void	validade_player(t_game *game, char **map, int x, int y);
 void	validade_door(t_game *game, int x, int y);
 
 //utils
-void	skip_file_lines(t_mapi *map);
 int		get_number_lines_map(t_mapi *map);
 int		find_valid_line(char *line);
+void	skip_file_lines(t_mapi *map);
 void	set_player(t_game *game, int column_pos, int row_pos, int *flag);
 
 //close
@@ -60,6 +67,7 @@ int		close_and_printf(t_game *game);
 int		close_game(t_game *game, char *msg);
 void	close_canvas(t_game *game);
 void	close_textures(t_game *game);
+void	close_collectables(t_game *game);
 
 //player
 int		key_press(int keycode, t_game *game);
@@ -78,9 +86,9 @@ void	init_r_val(t_game *game, t_player *player, double raydx, double raydy);
 void	dda_loop(t_game *game, t_ray *ray);
 void	compute_tex(t_game *g, t_ray *r,
 			int i, t_tex *t);
+void	render_collectables(t_game *g);
 t_tex	*compute_per(t_game *g, t_ray *r, t_player *p);
 t_tex	*side_gt_zero(t_game *g, t_ray *r, t_player *p);
-void	render_collectables(t_game *g);
 
 //draw
 void	set_configure(t_game *g, t_ray *r, int i, t_tex *t);
@@ -97,13 +105,16 @@ void	put_pixel_minimap(int x, int y, int color, t_game *game);
 void	draw_map_window(t_game *game, int px, int py);
 void	fill_mm_background(t_game *game, int cx, int cy, int r);
 void	mm_circle(t_game *game);
-int		is_inside_square(int x, int y);
 void	draw_player(t_game *game, int cx, int cy, int color);
+int		is_inside_square(int x, int y);
 
 //collectables
+int		load_textures(t_game *game, t_tex *arr, int n, const char **paths);
+int		load_texture(t_game *game, t_tex *tex, const char *path);
 void	find_collectables_and_doors(t_game *game);
 void	add_collect_or_door(t_game *game, int x, int y, int *n_collect);
 void	find_n_collect(t_game *game);
 void	update_collectables(t_game *game);
+void	init_collectables(t_game *game);
 
 #endif

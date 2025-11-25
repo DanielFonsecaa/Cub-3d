@@ -17,10 +17,12 @@ static int	mouse_hook(int x, int y, t_game *game)
 
 void	start(t_game *game)
 {
-	game->player.speed = 10;
+	game->player.speed = 3;
 	game->player.angle_speed = 0.003;
 	game->canvas.mlx = mlx_init();
 	init_textures(game);
+	init_collectables(game);
+	init_doors(game);
 	game->canvas.win = mlx_new_window(game->canvas.mlx, WIDTH, HEIGHT, "cub3d");
 	game->canvas.img = mlx_new_image(game->canvas.mlx, WIDTH, HEIGHT);
 	if (!game->canvas.img)
@@ -48,6 +50,12 @@ int	game_loop(t_game *game)
 	ft_bzero(&plane, sizeof(t_plane));
 	move_player(game);
 	fill_background(game);
+	i = 0;
+	while (i < WIDTH)
+	{
+		game->zbuffer[i] = 1e9;
+		i++;
+	}
 	plane.dirx = cos(game->player.angle);
 	plane.diry = sin(game->player.angle);
 	plane.plane_len = tan(FOV / 2.0);
@@ -68,6 +76,8 @@ int	game_loop(t_game *game)
 	draw_minimap(game);
 	mlx_put_image_to_window(game->canvas.mlx, game->canvas.win,
 		game->canvas.img, 0, 0);
+	auto_open_near_doors(game, 2);
+	update_doors_proximity(game, 2);
 	return (0);
 }
 
@@ -97,56 +107,6 @@ void	fill_background(t_game *game)
 		x = -1;
 		while (++x < WIDTH)
 			put_pixel_safe(x, y, floor_color, game);
-	}
-}
-
-static int in_bounds_tile(t_game *g, int tx, int ty)
-{
-	size_t len;
-
-	if (ty < 0 || ty >= g->grid.height)
-		return (0);
-	len = ft_strlen(g->grid.map[ty]);
-	if (tx < 0 || (size_t)tx >= len)
-		return (0);
-	return (1);
-}
-
-void    update_collectables(t_game *game)
-{
-	int px;
-	int py;
-	int i;
-
-	if (!game || !game->grid.map)
-		return ;
-	px = (int)(game->player.x / BLOCK);
-	py = (int)(game->player.y / BLOCK);
-	if (in_bounds_tile(game, px, py) && game->grid.map[py][px] == 'C')
-	{
-		i = 0;
-		while (i < game->n_collectables)
-		{
-			if (!game->collectables[i].is_collected
-				&& game->collectables[i].x == px
-				&& game->collectables[i].y == py)
-			{
-				game->collectables[i].is_collected = true;
-				if (game->n_collectables > 0)
-					game->n_collectables--;
-				game->grid.map[py][px] = '0';
-				break ;
-			}
-			i++;
-		}
-	}
-	if (game->n_collectables == 0)
-	{
-		if (in_bounds_tile(game, game->exit.x, game->exit.y)
-			&& game->grid.map[game->exit.y][game->exit.x] == 'D')
-			game->grid.map[game->exit.y][game->exit.x] = '0';
-		if (px == game->exit.x && py == game->exit.y)
-			close_game(game, "You win!\n");
 	}
 }
 
@@ -193,76 +153,3 @@ void	init_textures(t_game *g)
 					&g->collect.size_line, &g->collect.endian);
 	}
 }
-
- /* void	init_collectables(t_game *game)
-{
-	const int frame_count = 6;
-	const char *paths[6] = {
-		"textures/carrot/carrot_1.xpm", "textures/carrot/carrot_2.xpm",
-		"textures/carrot/carrot_3.xpm", "textures/carrot/carrot_4.xpm",
-		"textures/carrot/carrot_5.xpm", "textures/carrot/carrot_6.xpm"
-	};
-	game->collect_frame_count = frame_count;
-	game->collect_frames = ft_calloc(frame_count, sizeof(t_tex));
-	if (!game->collect_frames)
-		close_game(game, MISSING_ASSETS);
-	if (!load_textures(game, game->collect_frames, frame_count, paths))
-		close_game(game, MISSING_ASSETS);
-	if (game->collectables && game->n_collectables > 0)
-	{
-		int i = 0;
-		while (i < game->n_collectables)
-		{
-			game->collectables[i].frames = game->collect_frames;
-			i++;
-		}
-	}
-}
-
-
-
-int	load_texture(t_game *game, t_tex *tex, const char *path)
-{
-	int w;
-	int h;
-
-	if (!game || !tex || !path)
-		return (0);
-	tex->img = mlx_xpm_file_to_image(game->canvas.mlx, (char *)path, &w, &h);
-	if (!tex->img)
-		return (0);
-	tex->data = mlx_get_data_addr(tex->img, &tex->bpp, &tex->size_line, &tex->endian);
-	tex->width = w;
-	tex->height = h;
-	tex->path = ft_strdup(path);
-	if (!tex->path)
-		return (0);
-	return (1);
-}
-
-int	load_textures(t_game *game, t_tex *arr, int n, const char **paths)
-{
-	int i;
-
-	if (!game || !arr || !paths || n <= 0)
-		return (0);
-	i = 0;
-	while (i < n)
-	{
-		if (!load_texture(game, &arr[i], paths[i]))
-		{
-			while (--i >= 0)
-			{
-				if (arr[i].img)
-					mlx_destroy_image(game->canvas.mlx, arr[i].img);
-				free(arr[i].path);
-				arr[i].img = NULL;
-				arr[i].path = NULL;
-			}
-			return (0);
-		}
-		i++;
-	}
-	return (1);
-}
-  */

@@ -74,8 +74,6 @@ void	find_n_collect(t_game *game)
 		{
 			if (map[y][x] == 'C')
 				n_collect++;
-			if (game->has_door && map[y][x] == 'D')
-				close_game(game, HAS_EXIT_ALREADY);
 			if (!game->has_door && map[y][x] == 'D')
 				game->has_door = true;
 			x++;
