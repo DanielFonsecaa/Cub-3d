@@ -56,29 +56,36 @@ int	game_loop(t_game *game)
 		game->zbuffer[i] = 1e9;
 		i++;
 	}
-	plane.dirx = cos(game->player.angle);
-	plane.diry = sin(game->player.angle);
-	plane.plane_len = tan(FOV / 2.0);
-	plane.planex = -plane.diry * plane.plane_len;
-	plane.planey = plane.dirx * plane.plane_len;
-	i = 0;
-	while (i < WIDTH)
-	{
-		plane.camera_x = (2.0 * i) / (double)WIDTH - 1.0;
-		plane.raydx = plane.dirx + plane.planex * plane.camera_x;
-		plane.raydy = plane.diry + plane.planey * plane.camera_x;
-		draw_line(&game->player, game, &plane, i);
-		i++;
-	}
-	game->plane = plane;
+	setup_plane(&plane, game);
 	render_collectables(game);
 	update_collectables(game);
 	draw_minimap(game);
 	mlx_put_image_to_window(game->canvas.mlx, game->canvas.win,
 		game->canvas.img, 0, 0);
-	auto_open_near_doors(game, 2);
-	update_doors_proximity(game, 2);
+	auto_open_near_doors(game, 2, -1);
+	update_doors_proximity(game, 2, -1);
 	return (0);
+}
+
+void	setup_plane(t_plane *p, t_game *game)
+{
+	int	i;
+
+	p->dirx = cos(game->player.angle);
+	p->diry = sin(game->player.angle);
+	p->plane_len = tan(FOV / 2.0);
+	p->planex = -p->diry * p->plane_len;
+	p->planey = p->dirx * p->plane_len;
+	i = 0;
+	while (i < WIDTH)
+	{
+		p->camera_x = (2.0 * i) / (double)WIDTH - 1.0;
+		p->raydx = p->dirx + p->planex * p->camera_x;
+		p->raydy = p->diry + p->planey * p->camera_x;
+		draw_line(&game->player, game, p, i);
+		i++;
+	}
+	game->plane = *p;
 }
 
 void	fill_background(t_game *game)
@@ -136,6 +143,11 @@ void	init_textures(t_game *g)
 		close_game(g, "Error\nMlx failed to load east\n");
 	g->east.data = mlx_get_data_addr(g->east.img, &g->east.bpp,
 			&g->east.size_line, &g->east.endian);
+	verify_bonus_init(g);
+}
+
+void	verify_bonus_init(t_game *g)
+{
 	if (g->door.path)
 	{
 		g->door.img = mlx_xpm_file_to_image(g->canvas.mlx, g->door.path,

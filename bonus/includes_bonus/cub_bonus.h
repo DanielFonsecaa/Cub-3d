@@ -39,14 +39,20 @@ void	init_textures(t_game *g);
 void	fill_background(t_game *game);
 void	start(t_game *game);
 void	init_doors(t_game *game);
-void	update_doors_proximity(t_game *game, int tiles);
-void	auto_open_near_doors(t_game *game, int tiles);
+void	update_doors_proximity(t_game *game, int tiles, int i);
+void	auto_open_near_doors(t_game *game, int tiles, int i);
+int		count_doors(t_game *game, int *count);
 bool	touch(double px, double py, t_game *game);
 double	dist2(double ax, double ay, double bx, double by);
 int		in_bounds_tile(t_game *g, int tx, int ty);
 int		game_loop(t_game *game);
 int		tex_read_color(t_tex *tt, int tx, int ty);
 int		sprite_cmp(const void *a, const void *b);
+void	setup_plane(t_plane *p, t_game *game);
+void	verify_bonus_init(t_game *g);
+void	auto_open_verify_if(t_game *game, int i);
+int		setup_door_init(t_game *game, int *idx, int *count, int *y);
+void	dumb_refactor_function(t_game *game, int x, int y, int *idx);
 
 //validate
 void	validate_cell(t_game *game, int column_pos, int row_pos, int *flag);
