@@ -144,6 +144,20 @@ typedef struct s_sprite
 	double		trans_y;
 }	t_sprite;
 
+typedef struct t_minimap
+{
+	int	mx;
+	int	my;
+	int	cx;
+	int	cy;
+	int	dx;
+	int	dy;
+	int	screen_x;
+	int	screen_y;
+	int	x;
+	int	y;
+}	t_mini;
+
 typedef struct s_game
 {
 	int			bpp;

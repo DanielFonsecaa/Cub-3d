@@ -53,6 +53,7 @@ void	verify_bonus_init(t_game *g);
 void	auto_open_verify_if(t_game *game, int i);
 int		setup_door_init(t_game *game, int *idx, int *count, int *y);
 void	dumb_refactor_function(t_game *game, int x, int y, int *idx);
+void	perp_ray_setup(t_ray *r, t_player *p);
 
 //validate
 void	validate_cell(t_game *game, int column_pos, int row_pos, int *flag);
@@ -95,6 +96,7 @@ void	compute_tex(t_game *g, t_ray *r,
 void	render_collectables(t_game *g);
 t_tex	*compute_per(t_game *g, t_ray *r, t_player *p);
 t_tex	*side_gt_zero(t_game *g, t_ray *r, t_player *p);
+int		break_dda_loop(t_game *game, t_ray *ray);
 
 //draw
 void	set_configure(t_game *g, t_ray *r, int i, t_tex *t);
@@ -113,6 +115,9 @@ void	fill_mm_background(t_game *game, int cx, int cy, int r);
 void	mm_circle(t_game *game);
 void	draw_player(t_game *game, int cx, int cy, int color);
 int		is_inside_square(int x, int y);
+void	minimap_draw_condition1(t_game *g, int px, int py, t_mini *m);
+void	minimap_draw_condition2(t_game *g, int px, int py, t_mini *m);
+void	minimap_draw_condition3(t_game *g, int px, int py, t_mini *m);
 
 //collectables
 int		load_textures(t_game *game, t_tex *arr, int n, const char **paths);
@@ -122,5 +127,7 @@ void	add_collect_or_door(t_game *game, int x, int y, int *n_collect);
 void	find_n_collect(t_game *game);
 void	update_collectables(t_game *game);
 void	init_collectables(t_game *game);
+void	pickup_check(t_game *g);
+void	check_collect_grip(t_game *game, bool *any_left);
 
 #endif

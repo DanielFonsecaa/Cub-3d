@@ -46,70 +46,72 @@ static inline int	in_bounds(t_game *g, int mx, int my)
 	return (1);
 }
 
+void	minimap_draw_condition1(t_game *g, int px, int py, t_mini *m)
+{
+	m->screen_x = MM_ORG_X + (m->mx - (px - MM_RAD)) * MM_TILE;
+	m->screen_y = MM_ORG_Y + (m->my - (py - MM_RAD)) * MM_TILE;
+	draw_square(m->screen_x, m->screen_y, MM_TILE, g);
+}
+
+void	minimap_draw_condition2(t_game *g, int px, int py, t_mini *m)
+{
+	m->cx = MM_ORG_X + (m->mx - (px - MM_RAD)) * MM_TILE + MM_TILE / 2;
+	m->cy = MM_ORG_Y + (m->my - (py - MM_RAD)) * MM_TILE + MM_TILE / 2;
+	m->dx = -2;
+	while (m->dx <= 2)
+	{
+		m->dy = -2;
+		while (m->dy <= 2)
+		{
+			if (is_inside_square(m->cx + m->dx, m->cy + m->dy))
+				put_pixel_minimap(m->cx + m->dx, m->cy + m->dy, RED, g);
+			m->dy++;
+		}
+		m->dx++;
+	}
+}
+
+void	minimap_draw_condition3(t_game *g, int px, int py, t_mini *m)
+{
+	m->screen_x = MM_ORG_X + (m->mx - (px - MM_RAD)) * MM_TILE;
+	m->screen_y = MM_ORG_Y + (m->my - (py - MM_RAD)) * MM_TILE;
+	m->y = 0;
+	while (m->y < MM_TILE)
+	{
+		m->x = 0;
+		while (m->x < MM_TILE)
+		{
+			if (m->y == 0 || m->y == MM_TILE - 1 || m->x == 0
+				|| m->x == MM_TILE - 1)
+			{
+				if (is_inside_square(m->screen_x + m->x, m->screen_y + m->y))
+					put_pixel_minimap(m->screen_x + m->x, m->screen_y + m->y,
+						GREEN, g);
+			}
+			m->x++;
+		}
+		m->y++;
+	}
+}
+
 void	draw_map_window(t_game *game, int px, int py)
 {
-	int	mx;
-	int	my;
-	int	cx;
-	int	cy;
-	int	dx;
-	int	dy;
-	int	screen_x;
-	int	screen_y;
-	int	x;
-	int	y;
+	t_mini	m;
 
-	my = py - MM_RAD -1;
-	while (++my <= py + MM_RAD)
+	m.my = py - MM_RAD - 1;
+	while (++m.my <= py + MM_RAD)
 	{
-		mx = px - MM_RAD -1;
-		while (++mx <= px + MM_RAD)
+		m.mx = px - MM_RAD - 1;
+		while (++m.mx <= px + MM_RAD)
 		{
-			if (!in_bounds(game, mx, my))
+			if (!in_bounds(game, m.mx, m.my))
 				continue ;
-			if (game->grid.map[my][mx] == '1')
-			{
-				screen_x = MM_ORG_X + (mx - (px - MM_RAD)) * MM_TILE;
-				screen_y = MM_ORG_Y + (my - (py - MM_RAD)) * MM_TILE;
-				draw_square(screen_x, screen_y, MM_TILE, game);
-			}
-			else if (game->grid.map[my][mx] == 'C')
-			{
-				cx = MM_ORG_X + (mx - (px - MM_RAD)) * MM_TILE + MM_TILE / 2;
-				cy = MM_ORG_Y + (my - (py - MM_RAD)) * MM_TILE + MM_TILE / 2;
-				dx = -2;
-				while (dx <= 2)
-				{
-					dy = -2;
-					while (dy <= 2)
-					{
-						if (is_inside_square(cx + dx, cy + dy))
-							put_pixel_minimap(cx + dx, cy + dy, RED, game);
-						dy++;
-					}
-					dx++;
-				}
-			}
-			else if (game->grid.map[my][mx] == 'D')
-			{
-				screen_x = MM_ORG_X + (mx - (px - MM_RAD)) * MM_TILE;
-				screen_y = MM_ORG_Y + (my - (py - MM_RAD)) * MM_TILE;
-				y = 0;
-				while (y < MM_TILE)
-				{
-					x = 0;
-					while (x < MM_TILE)
-					{
-						if (y == 0 || y == MM_TILE - 1 || x == 0 || x == MM_TILE - 1)
-						{
-							if (is_inside_square(screen_x + x, screen_y + y))
-								put_pixel_minimap(screen_x + x, screen_y + y, GREEN, game);
-						}
-						x++;
-					}
-					y++;
-				}
-			}
+			if (game->grid.map[m.my][m.mx] == '1')
+				minimap_draw_condition1(game, px, py, &m);
+			else if (game->grid.map[m.my][m.mx] == 'C')
+				minimap_draw_condition2(game, px, py, &m);
+			else if (game->grid.map[m.my][m.mx] == 'D')
+				minimap_draw_condition3(game, px, py, &m);
 		}
 	}
 }

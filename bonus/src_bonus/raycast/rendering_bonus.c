@@ -45,6 +45,14 @@ void	compute_tex(t_game *g, t_ray *r, int i, t_tex *t)
 	set_configure(g, r, i, t);
 }
 
+void	perp_ray_setup(t_ray *r, t_player *p)
+{
+	if (r->perp_dist < 1e-6)
+		r->perp_dist = 1e-6;
+	r->hit_x = p->x + r->perp_dist * r->cos_angle;
+	r->hit_y = p->y + r->perp_dist * r->sin_angle;
+}
+
 t_tex	*compute_per(t_game *g, t_ray *r, t_player *p)
 {
 	t_tex	*texture;
@@ -69,11 +77,27 @@ t_tex	*compute_per(t_game *g, t_ray *r, t_player *p)
 	}
 	if (r->cell == 'D' && g->door.img)
 		texture = &g->door;
-	if (r->perp_dist < 1e-6)
-		r->perp_dist = 1e-6;
-	r->hit_x = p->x + r->perp_dist * r->cos_angle;
-	r->hit_y = p->y + r->perp_dist * r->sin_angle;
+	perp_ray_setup(r, p);
 	return (texture);
+}
+
+int	break_dda_loop(t_game *game, t_ray *ray)
+{
+	if (ray->map_y < 0 || ray->map_y >= ray->rows)
+	{
+		ray->cell = '1';
+		return (0);
+	}
+	ray->row_len = ft_strlen(game->grid.map[ray->map_y]);
+	if ((ray->map_x < 0 || (size_t)ray->map_x >= ray->row_len))
+	{
+		ray->cell = '1';
+		return (0);
+	}
+	ray->cell = game->grid.map[ray->map_y][ray->map_x];
+	if (ray->cell == '1' || ray->cell == 'D')
+		return (0);
+	return (1);
 }
 
 void	dda_loop(t_game *game, t_ray *ray)
@@ -96,19 +120,7 @@ void	dda_loop(t_game *game, t_ray *ray)
 			ray->map_y += ray->step_y;
 			ray->side = 1;
 		}
-		if (ray->map_y < 0 || ray->map_y >= ray->rows)
-		{
-			ray->cell = '1';
-			break ;
-		}
-		ray->row_len = ft_strlen(game->grid.map[ray->map_y]);
-		if ((ray->map_x < 0 || (size_t)ray->map_x >= ray->row_len))
-		{
-			ray->cell = '1';
-			break ;
-		}
-		ray->cell = game->grid.map[ray->map_y][ray->map_x];
-		if (ray->cell == '1' || ray->cell == 'D')
+		if (break_dda_loop(game, ray) == 0)
 			break ;
 	}
 }

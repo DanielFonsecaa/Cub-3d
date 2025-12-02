@@ -32,7 +32,7 @@ int	count_doors(t_game *game, int *count)
 	{
 		game->doors = NULL;
 		game->n_doors = 0;
- 		return (0);
+		return (0);
 	}
 	return (1);
 }
@@ -75,7 +75,9 @@ void	init_doors(t_game *game)
 			break ;
 	}
 } 
-VERSAO ANTERIOR, A TESTAR PARA VER SE ARRANJAMOS FORMA DE ABRIR O MAPA SEM PORTAS QUANDO NAO TIVER PORTA E LOADAR QUANDO TIVER	*/
+VERSAO ANTERIOR, A TESTAR PARA VER SE ARRANJAMOS 
+FORMA DE ABRIR O MAPA SEM PORTAS QUANDO NAO TIVER PORTA
+E LOADAR QUANDO TIVER	*/
 
 void	dumb_refactor_function(t_game *game, int x, int y, int *idx)
 {
@@ -115,7 +117,7 @@ void	init_doors(t_game *game)
 
 int	setup_door_init(t_game *game, int *idx, int *count, int *y)
 {
-		if (!game || !game->grid.map || game->grid.height <= 0)
+	if (!game || !game->grid.map || game->grid.height <= 0)
 		return (0);
 	if (!count_doors(game, count))
 		return (0);
@@ -129,7 +131,7 @@ int	setup_door_init(t_game *game, int *idx, int *count, int *y)
 	{
 		game->doors = ft_calloc(*count, sizeof(t_door));
 		if (!game->doors)
-			close_game(game, MISSING_ASSETS);		
+			close_game(game, MISSING_ASSETS);
 	}
 	game->n_doors = *count;
 	*idx = 0;

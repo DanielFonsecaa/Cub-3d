@@ -1,54 +1,63 @@
 #include "../../includes_bonus/cub_bonus.h"
 
-//Deixa esse fixeiro pra fazermos juntos se quiser, faz os mais faceis
-void	update_collectables(t_game *game)
+void	pickup_check(t_game *g)
 {
-	int		px;
-	int		py;
-	int		i;
-	int		ry;
-	int		rx;
-	bool	any_left;
+	int px;
+	int py;
+	int i;
 
-	if (!game || !game->grid.map)
-		return ;
-	px = (int)(game->player.x / BLOCK);
-	py = (int)(game->player.y / BLOCK);
-	if (in_bounds_tile(game, px, py) && game->grid.map[py][px] == 'C')
+	px = (int)(g->player.x / BLOCK);
+	py = (int)(g->player.y / BLOCK);
+	if (in_bounds_tile(g, px, py) && g->grid.map[py][px] == 'C')
 	{
 		i = 0;
-		while (i < game->n_collectables)
+		while (i < g->n_collectables)
 		{
-			if (!game->collectables[i].is_collected
-				&& game->collectables[i].x == px
-				&& game->collectables[i].y == py)
+			if (!g->collectables[i].is_collected
+				&& g->collectables[i].x == px
+				&& g->collectables[i].y == py)
 			{
-				game->collectables[i].is_collected = true;
-				game->grid.map[py][px] = '0';
+				g->collectables[i].is_collected = true;
+				g->grid.map[py][px] = '0';
 				break ;
 			}
 			i++;
 		}
 	}
-	any_left = false;
-	if (game->grid.map)
+}
+
+void	check_collect_grip(t_game *game, bool *any_left)
+{
+	int ry;
+	int rx;
+
+	ry = 0;
+	while (game->grid.map[ry] && !*any_left)
 	{
-		ry = 0;
-		while (game->grid.map[ry] && !any_left)
+		rx = 0;
+		while (game->grid.map[ry][rx])
 		{
-			rx = 0;
-			while (game->grid.map[ry][rx])
+			if (game->grid.map[ry][rx] == 'C')
 			{
-				if (game->grid.map[ry][rx] == 'C')
-				{
-					any_left = true;
-					break ;
-				}
-				rx++;
+				*any_left = true;
+				return ;
 			}
-			ry++;
+			rx++;
 		}
+		ry++;
 	}
+}
+
+//Deixa esse fixeiro pra fazermos juntos se quiser, faz os mais faceis
+void	update_collectables(t_game *game)
+{
+	bool	any_left;
+
+	if (!game || !game->grid.map)
+		return ;
+	pickup_check(game);
+	any_left = false;
+	check_collect_grip(game, &any_left);
 	if (!any_left)
 		close_game(game, "You win!\n");
 }
