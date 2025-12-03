@@ -48,7 +48,6 @@ void	check_collect_grip(t_game *game, bool *any_left)
 	}
 }
 
-//Deixa esse fixeiro pra fazermos juntos se quiser, faz os mais faceis
 void	update_collectables(t_game *game)
 {
 	bool	any_left;
@@ -89,145 +88,212 @@ void	init_collectables(t_game *game)
 	}
 }
 
-void	render_collectables(t_game *g)
+void	init_anim_state(t_game *g, t_render_anim *ra)
 {
-	int			x;
-	int			y;
-	int			sidx;
-	int			count;
-	double		inv_det;
-	double		proj_plane;
-	t_tex		*t;
-	t_sprite	*sprites;
-	size_t		rowlen;
-	static int	anim_tick = 0;
-	static int	anim_frame = 0;
-	const int	anim_speed = 8;
+	static int	anim_tick;
+	static int	anim_frame;
 
-	sprites = NULL;
-	if (!g || !g->grid.map)
-		return ;
-	if (g->collect_frame_count > 0 && g->collect_frames)
+	ra->proj_plane = (WIDTH / 2.0) / tan(FOV / 2.0);
+	ra->inv_det = (g->plane.planex * g->plane.diry - g->plane.dirx * g->plane.planey);
 	{
-		if (++anim_tick >= anim_speed)
+		const int anim_speed = 8;
+		if (g->collect_frame_count > 0 && g->collect_frames)
 		{
-			anim_tick = 0;
-			anim_frame = (anim_frame + 1) % g->collect_frame_count;
+			anim_tick++;
+			if (anim_tick >= anim_speed)
+			{
+				anim_tick = 0;
+				anim_frame = (anim_frame + 1) % g->collect_frame_count;
+			}
 		}
 	}
-	proj_plane = (WIDTH / 2.0) / tan(FOV / 2.0);
-	inv_det = (g->plane.planex * g->plane.diry - g->plane.dirx * g->plane.planey);
-	if (fabs(inv_det) < 1e-9)
-		return ;
-	inv_det = 1.0 / inv_det;
+	ra->anim_frame = anim_frame;
+}
+
+int	count_collect_sprites(t_game *g)
+{
+	int		count;
+	int		y;
+	size_t	rowlen;
+	int		x;
+
 	count = 0;
 	if (!g->grid.map || g->grid.height <= 0)
-	{
-		free(sprites);
-		return ;
-	}
-	for (y = 0; y < g->grid.height; y++)
+		return (0);
+	y = 0;
+	while (y < g->grid.height)
 	{
 		rowlen = ft_strlen(g->grid.map[y]);
-		for (x = 0; (size_t)x < rowlen; x++)
+		x = 0;
+		while ((size_t)x < rowlen)
+		{
 			if (g->grid.map[y][x] == 'C')
 				count++;
+			x++;
+		}
+		y++;
 	}
-	if (count == 0)
-	{
-		free(sprites);
+	return (count);
+}
+
+void	push_sprite_if_visible(t_game *g, t_render_anim *ra, t_sprite *sp, int x, int y)
+{
+	double	sx;
+	double	sy;
+	double	relx;
+	double	rely;
+
+	sx = (x + 0.5) * BLOCK;
+	sy = (y + 0.5) * BLOCK;
+	relx = sx - g->player.x;
+	rely = sy - g->player.y;
+	ra->trans_x = ra->inv_det * (g->plane.diry * relx - g->plane.dirx * rely);
+	ra->trans_y = ra->inv_det * (-g->plane.planey * relx + g->plane.planex * rely);
+	ra->trans_x /= (double)BLOCK;
+	ra->trans_y /= (double)BLOCK;
+	if (ra->trans_y <= 1e-6)
 		return ;
+	ra->screen_x = (int)((WIDTH / 2.0) * (1.0 + ra->trans_x / ra->trans_y));
+	ra->spr_h = (int)fabs(ra->proj_plane / ra->trans_y);
+	if (ra->spr_h <= 0)
+		ra->spr_h = 1;
+	if (ra->spr_h > HEIGHT)
+		ra->spr_h = HEIGHT;
+	ra->spr_w = ra->spr_h;
+	if (ra->spr_w > WIDTH)
+		ra->spr_w = WIDTH;
+	push_sprite_visible_inits(ra, sp, x, y);
+}
+
+void	push_sprite_visible_inits(t_render_anim *ra, t_sprite *sp, int x, int y)
+{
+	ra->start_y = -ra->spr_h / 2 + HEIGHT / 2;
+	ra->end_y = ra->spr_h / 2 + HEIGHT / 2;
+	if (ra->start_y < 0)
+		ra->start_y = 0;
+	if (ra->end_y >= HEIGHT)
+		ra->end_y = HEIGHT - 1;
+	ra->start_x = -ra->spr_w / 2 + ra->screen_x;
+	ra->end_x = ra->spr_w / 2 + ra->screen_x;
+	if (ra->start_x < 0)
+		ra->start_x = 0;
+	if (ra->end_x >= WIDTH)
+		ra->end_x = WIDTH - 1;
+	sp->mx = x;
+	sp->my = y;
+	sp->trans_x = ra->trans_x;
+	sp->trans_y = ra->trans_y;
+	sp->screen_x = ra->screen_x;
+	sp->spr_w = ra->spr_w;
+	sp->spr_h = ra->spr_h;
+	sp->start_x = ra->start_x;
+	sp->end_x = ra->end_x;
+	sp->start_y = ra->start_y;
+	sp->end_y = ra->end_y;
+}
+
+int	build_sprite_list(t_game *g, t_render_anim *ra, t_sprite *sprites)
+{
+	int		sidx;
+	int		y;
+	int		x;
+	size_t	rowlen;
+
+	sidx = 0;
+	y = 0;
+	while (y < g->grid.height)
+	{
+		rowlen = ft_strlen(g->grid.map[y]);
+		x = 0;
+		while ((size_t)x < rowlen)
+		{
+			if (g->grid.map[y][x] == 'C')
+				push_sprite_if_visible(g, ra, &sprites[sidx++], x, y);
+			x++;
+		}
+		y++;
 	}
+	return (sidx);
+}
+
+void	draw_sprite(t_game *g, t_render_anim *ra, t_sprite *sp)
+{
+	int		stripe;
+	int		texX;
+	int		ypix;
+	int		d;
+	t_tex		*t;
+
+	if (g->collect_frames && g->collect_frame_count > 0)
+		t = &g->collect_frames[ra->anim_frame];
+	else
+		t = &g->collect;
+	if (!t || !t->data)
+		return ;
+	stripe = sp->start_x;
+	while (stripe <= sp->end_x)
+	{
+		if (stripe >= 0 && stripe < WIDTH && sp->trans_y < g->zbuffer[stripe])
+		{
+			texX = (int)((double)(stripe - (-sp->spr_w / 2 + sp->screen_x)) * t->width / sp->spr_w);
+			if (texX < 0)
+				texX = 0;
+			if (texX >= t->width)
+				texX = t->width - 1;
+			ypix = sp->start_y;
+			while (ypix <= sp->end_y)
+			{
+				int texY;
+				int col;
+
+				d = ypix - (-sp->spr_h / 2 + HEIGHT / 2);
+				texY = (int)((double)d * t->height / sp->spr_h);
+				if (texY < 0)
+					texY = 0;
+				if (texY >= t->height)
+					texY = t->height - 1;
+				col = tex_read_color(t, texX, texY);
+				if ((col & 0x00FFFFFF) != 0)
+					put_pixel_safe(stripe, ypix, col, g);
+				ypix++;
+			}
+		}
+		stripe++;
+	}
+}
+
+void	render_collectables(t_game *g)
+{
+	t_render_anim	ra;
+	int			count;
+	t_sprite		*sprites;
+	int			idx;
+
+	if (!g || !g->grid.map)
+		return ;
+	init_anim_state(g, &ra);
+	if (fabs(ra.inv_det) < 1e-9)
+		return ;
+	ra.inv_det = 1.0 / ra.inv_det;
+	count = count_collect_sprites(g);
+	if (count <= 0)
+		return ;
 	sprites = ft_calloc(count, sizeof(t_sprite));
 	if (!sprites)
 		return ;
-	sidx = 0;
-	for (y = 0; y < g->grid.height; y++)
-	{
-		rowlen = ft_strlen(g->grid.map[y]);
-		for (x = 0; (size_t)x < rowlen; x++)
-		{
-			if (g->grid.map[y][x] == 'C')
-			{
-				double sx = (x + 0.5) * BLOCK;
-				double sy = (y + 0.5) * BLOCK;
-				double relx = sx - g->player.x;
-				double rely = sy - g->player.y;
-				double trans_x = inv_det * ( g->plane.diry * relx - g->plane.dirx * rely);
-				double trans_y = inv_det * (-g->plane.planey * relx + g->plane.planex * rely);
-				trans_x /= (double)BLOCK;
-				trans_y /= (double)BLOCK;
-				if (trans_y > 1e-6)
-				{
-					int screen_x = (int)((WIDTH / 2.0) * (1.0 + trans_x / trans_y));
-					int spr_h = (int)fabs(proj_plane / trans_y);
-					int spr_w = spr_h;
-					if (spr_h <= 0) spr_h = 1;
-					if (spr_w <= 0) spr_w = 1;
-					if (spr_h > HEIGHT) spr_h = HEIGHT;
-					if (spr_w > WIDTH)  spr_w = WIDTH;
-					int start_y = -spr_h / 2 + HEIGHT / 2;
-					int end_y   =  spr_h / 2 + HEIGHT / 2;
-					if (start_y < 0) start_y = 0;
-					if (end_y >= HEIGHT) end_y = HEIGHT - 1;
-					int start_x = -spr_w / 2 + screen_x;
-					int end_x   =  spr_w / 2 + screen_x;
-					if (start_x < 0) start_x = 0;
-					if (end_x >= WIDTH) end_x = WIDTH - 1;
-					sprites[sidx].mx = x;
-					sprites[sidx].my = y;
-					sprites[sidx].trans_x = trans_x;
-					sprites[sidx].trans_y = trans_y;
-					sprites[sidx].screen_x = screen_x;
-					sprites[sidx].spr_w = spr_w;
-					sprites[sidx].spr_h = spr_h;
-					sprites[sidx].start_x = start_x;
-					sprites[sidx].end_x = end_x;
-					sprites[sidx].start_y = start_y;
-					sprites[sidx].end_y = end_y;
-					sidx++;
-				}
-			}
-		}
-	}
-	count = sidx;
-	if (count == 0)
+	idx = build_sprite_list(g, &ra, sprites);
+	if (idx <= 0)
 	{
 		free(sprites);
-		return;
+		return ;
 	}
-	qsort(sprites, count, sizeof(t_sprite), sprite_cmp);
-	for (sidx = 0; sidx < count; sidx++)
+	qsort(sprites, idx, sizeof(t_sprite), sprite_cmp);
+	count = idx;
+	idx = -1;
+	while (++idx < count)
 	{
-		t_sprite *sp = &sprites[sidx];
-		if (g->collect_frames && g->collect_frame_count > 0)
-			t = &g->collect_frames[anim_frame];
-		else
-			t = &g->collect;
-
-		if (!t || !t->data)
-			continue ;
-		for (int stripe = sp->start_x; stripe <= sp->end_x; stripe++)
-		{
-			if (stripe < 0 || stripe >= WIDTH)
-				continue ;
-			if (sp->trans_y < g->zbuffer[stripe])
-			{
-				int texX = (int)((double)(stripe - (-sp->spr_w / 2 + sp->screen_x)) * t->width / sp->spr_w);
-				if (texX < 0) texX = 0;
-				if (texX >= t->width) texX = t->width - 1;
-				for (int ypix = sp->start_y; ypix <= sp->end_y; ypix++)
-				{
-					int d = ypix - (-sp->spr_h / 2 + HEIGHT / 2);
-					int texY = (int)((double)d * t->height / sp->spr_h);
-					if (texY < 0) texY = 0;
-					if (texY >= t->height) texY = t->height - 1;
-					int col = tex_read_color(t, texX, texY);
-					if ((col & 0x00FFFFFF) != 0)
-						put_pixel_safe(stripe, ypix, col, g);
-				}
-			}
-		}
+		draw_sprite(g, &ra, &sprites[idx]);
+		idx++;
 	}
 	free(sprites);
 }

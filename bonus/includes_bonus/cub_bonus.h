@@ -130,4 +130,11 @@ void	init_collectables(t_game *game);
 void	pickup_check(t_game *g);
 void	check_collect_grip(t_game *game, bool *any_left);
 
+void	init_anim_state(t_game *g, t_render_anim *ra);
+int		count_collect_sprites(t_game *g);
+void	push_sprite_if_visible(t_game *g, t_render_anim *ra, t_sprite *sp, int x, int y);
+int		build_sprite_list(t_game *g, t_render_anim *ra, t_sprite *sprites);
+void	draw_sprite(t_game *g, t_render_anim *ra, t_sprite *sp);
+void	push_sprite_visible_inits(t_render_anim *ra, t_sprite *sp, int x, int y);
+
 #endif

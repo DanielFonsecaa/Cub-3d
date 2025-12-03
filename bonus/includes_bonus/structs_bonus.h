@@ -158,6 +158,42 @@ typedef struct t_minimap
 	int	y;
 }	t_mini;
 
+typedef struct s_render_anim
+{
+	int			x;
+	int			y;
+	int			sidx;
+	int			count;
+	double		inv_det;
+	double		proj_plane;
+	t_tex		*t;
+	t_sprite	*sprites;
+	size_t		rowlen;
+	int			anim_tick;
+	int			anim_frame;
+	int			anim_speed;
+	double 		sx;
+	double 		sy;
+	double 		relx;
+	double 		rely;
+	double 		trans_x;
+	double 		trans_y;
+	int 		screen_x;
+	int 		spr_h;
+	int 		spr_w;
+	int 		start_y;
+	int 		end_y;
+	int 		start_x;
+	int 		end_x;
+	int 		stripe;
+	t_sprite 	*sp;
+	int 		texX;
+	int 		ypix;
+	int 		d;
+	int 		texY;
+	int 		col;
+}	t_render_anim;
+
 typedef struct s_game
 {
 	int			bpp;
