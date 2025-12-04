@@ -80,4 +80,13 @@ void	set_background_color(t_game *game, t_color *bg, int i, char *line)
 		if (j == 2)
 			bg->blue = color;
 	}
+	color = 0;
+	if (line[i])
+	{
+		while(ft_iswhite_space(line[i]))
+			i++;
+		color = validate_rgb(game, line, &i);
+		if (color != 0)
+			close_game(game, "Invalid Color");
+	}
 }
