@@ -55,19 +55,24 @@ BONUS_BUILD_PATH	= bonus/.build_bonus
 BONUS_FILES			= main_bonus.c \
 					  collectables/collectables_bonus.c \
 					  collectables/collectables_helper_bonus.c \
+					  collectables/collectables_init_bonus.c \
+					  collectables/collectables_render_bonus.c \
 					  collectables/door_bonus.c \
+					  collectables/door_helper_bonus.c \
 					  parsing/assets_bonus.c \
 					  parsing/map_bonus.c \
 					  parsing/map_utils_bonus.c \
 					  parsing/validate_bonus.c \
 					  parsing/collect_bonus.c \
 					  minimap/minimap_bonus.c \
+					  minimap/minimap_draw_bonus.c \
 					  minimap/minimap_helper_bonus.c \
 					  raycast/draw_bonus.c \
 					  raycast/rendering_bonus.c \
 					  raycast/rendering_helper_bonus.c \
 					  free_bonus.c \
 					  game_bonus.c \
+					  helper_bonus.c \
 					  movement_bonus.c \
 					  player_bonus.c
 

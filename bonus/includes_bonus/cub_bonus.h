@@ -54,6 +54,9 @@ void	auto_open_verify_if(t_game *game, int i);
 int		setup_door_init(t_game *game, int *idx, int *count, int *y);
 void	dumb_refactor_function(t_game *game, int x, int y, int *idx);
 void	perp_ray_setup(t_ray *r, t_player *p);
+int		mouse_hook(int x, int y, t_game *game);
+int		verify_render_collect(t_game *g, t_r_anim *ra, int *count);
+void	helper_draw_sprite(t_game *g, t_r_anim *ra, t_sprite *sp, t_tex *t);
 
 //validate
 void	validate_cell(t_game *game, int column_pos, int row_pos, int *flag);
@@ -115,9 +118,9 @@ void	fill_mm_background(t_game *game, int cx, int cy, int r);
 void	mm_circle(t_game *game);
 void	draw_player(t_game *game, int cx, int cy, int color);
 int		is_inside_square(int x, int y);
-void	minimap_draw_condition1(t_game *g, int px, int py, t_mini *m);
-void	minimap_draw_condition2(t_game *g, int px, int py, t_mini *m);
-void	minimap_draw_condition3(t_game *g, int px, int py, t_mini *m);
+void	minimap_draw_wall(t_game *g, int px, int py, t_mini *m);
+void	minimap_draw_collectable(t_game *g, int px, int py, t_mini *m);
+void	minimap_draw_door(t_game *g, int px, int py, t_mini *m);
 
 //collectables
 int		load_textures(t_game *game, t_tex *arr, int n, const char **paths);
@@ -130,11 +133,11 @@ void	init_collectables(t_game *game);
 void	pickup_check(t_game *g);
 void	check_collect_grip(t_game *game, bool *any_left);
 
-void	init_anim_state(t_game *g, t_render_anim *ra);
+void	init_anim_state(t_game *g, t_r_anim *ra);
 int		count_collect_sprites(t_game *g);
-void	push_sprite_if_visible(t_game *g, t_render_anim *ra, t_sprite *sp, int x, int y);
-int		build_sprite_list(t_game *g, t_render_anim *ra, t_sprite *sprites);
-void	draw_sprite(t_game *g, t_render_anim *ra, t_sprite *sp);
-void	push_sprite_visible_inits(t_render_anim *ra, t_sprite *sp, int x, int y);
+void	push_sprite_if_visible(t_game *g, t_r_anim *ra, t_sprite *sp);
+int		build_sprite_list(t_game *g, t_r_anim *ra, t_sprite *sprites);
+void	draw_sprite(t_game *g, t_r_anim *ra, t_sprite *sp);
+void	push_sprite_visible_inits(t_r_anim *ra, t_sprite *sp, int x, int y);
 
 #endif

@@ -70,3 +70,30 @@ int	rgb_helper(t_game *game, char *str, char *line, int *i)
 		*i += 1;
 	return (value);
 }
+
+void	perp_ray_setup(t_ray *r, t_player *p)
+{
+	if (r->perp_dist < 1e-6)
+		r->perp_dist = 1e-6;
+	r->hit_x = p->x + r->perp_dist * r->cos_angle;
+	r->hit_y = p->y + r->perp_dist * r->sin_angle;
+}
+
+int	break_dda_loop(t_game *game, t_ray *ray)
+{
+	if (ray->map_y < 0 || ray->map_y >= ray->rows)
+	{
+		ray->cell = '1';
+		return (0);
+	}
+	ray->row_len = ft_strlen(game->grid.map[ray->map_y]);
+	if ((ray->map_x < 0 || (size_t)ray->map_x >= ray->row_len))
+	{
+		ray->cell = '1';
+		return (0);
+	}
+	ray->cell = game->grid.map[ray->map_y][ray->map_x];
+	if (ray->cell == '1' || ray->cell == 'D')
+		return (0);
+	return (1);
+}

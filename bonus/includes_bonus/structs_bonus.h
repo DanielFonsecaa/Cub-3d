@@ -146,16 +146,16 @@ typedef struct s_sprite
 
 typedef struct t_minimap
 {
-	int	mx;
-	int	my;
-	int	cx;
-	int	cy;
-	int	dx;
-	int	dy;
-	int	screen_x;
-	int	screen_y;
-	int	x;
-	int	y;
+	int		mx;
+	int		my;
+	int		cx;
+	int		cy;
+	int		dx;
+	int		dy;
+	int		screen_x;
+	int		screen_y;
+	int		x;
+	int		y;
 }	t_mini;
 
 typedef struct s_render_anim
@@ -172,27 +172,27 @@ typedef struct s_render_anim
 	int			anim_tick;
 	int			anim_frame;
 	int			anim_speed;
-	double 		sx;
-	double 		sy;
-	double 		relx;
-	double 		rely;
-	double 		trans_x;
-	double 		trans_y;
-	int 		screen_x;
-	int 		spr_h;
-	int 		spr_w;
-	int 		start_y;
-	int 		end_y;
-	int 		start_x;
-	int 		end_x;
-	int 		stripe;
-	t_sprite 	*sp;
-	int 		texX;
-	int 		ypix;
-	int 		d;
-	int 		texY;
-	int 		col;
-}	t_render_anim;
+	double		sx;
+	double		sy;
+	double		relx;
+	double		rely;
+	double		trans_x;
+	double		trans_y;
+	int			screen_x;
+	int			spr_h;
+	int			spr_w;
+	int			start_y;
+	int			end_y;
+	int			start_x;
+	int			end_x;
+	int			stripe;
+	t_sprite	*sp;
+	int			tex_x;
+	int			ypix;
+	int			d;
+	int			tex_y;
+	int			col;
+}	t_r_anim;
 
 typedef struct s_game
 {
