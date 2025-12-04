@@ -57,8 +57,11 @@ void	update_collectables(t_game *game)
 	pickup_check(game);
 	any_left = false;
 	check_collect_grip(game, &any_left);
-	if (!any_left)
-		close_game(game, "You win!\n");
+	if (game->n_collectables > 0)
+	{
+		if (!any_left)
+			close_game(game, "You win!\n");
+	}
 }
 
 void	init_collectables(t_game *game)

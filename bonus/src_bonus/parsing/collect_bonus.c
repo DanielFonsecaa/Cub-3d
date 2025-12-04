@@ -23,10 +23,10 @@ void	find_collectables_and_doors(t_game *game)
 		}
 		y++;
 	}
-	if (game->n_collectables == 0)
+/*	if (game->n_collectables == 0)
 		close_game(game, NO_COLLECTABLES);
 	if (!game->has_door)
-		close_game(game, NO_EXIT);
+		close_game(game, NO_EXIT);*/
 }
 
 void	add_collect_or_door(t_game *game, int x, int y, int *n_collect)

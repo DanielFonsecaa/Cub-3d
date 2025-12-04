@@ -102,11 +102,16 @@ void	skip_invalid_map(t_mapi *map, int *flag)
 		if (find_valid_line(line))
 		{
 			free(line);
+			line = NULL;
 			*flag = 1;
 			break ;
 		}
 		free(line);
 		line = get_next_line(map->fd);
 	}
-	free(line);
+	if (line)
+	{
+		free(line);
+		line = NULL;
+	}
 }

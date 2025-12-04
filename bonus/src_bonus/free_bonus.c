@@ -13,6 +13,8 @@ int	close_game(t_game *game, char *msg)
 
 	if (!game)
 		return (1);
+	if (game->doors)
+		free(game->doors);
 	close_textures(game);
 	close_canvas(game);
 	if (game->grid.map)
