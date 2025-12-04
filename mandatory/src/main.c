@@ -13,7 +13,7 @@ int	main(int argc, char **argv)
 	parsing(&game, argv[1]);
 	if (!game.grid.map)
 	{
-		perror("get_map");
+		ft_printf("Error\nEmpty map\n");
 		exit(1);
 	}
 	start(&game);

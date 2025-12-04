@@ -109,6 +109,12 @@ typedef struct s_plane
 	double		raydy;
 }	t_plane;
 
+typedef struct s_con
+{
+	int			x;
+	int			y;
+}	t_con;
+
 typedef struct s_game
 {
 	char		*data;

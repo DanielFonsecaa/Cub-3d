@@ -57,6 +57,7 @@ void	perp_ray_setup(t_ray *r, t_player *p);
 int		mouse_hook(int x, int y, t_game *game);
 int		verify_render_collect(t_game *g, t_r_anim *ra, int *count);
 void	helper_draw_sprite(t_game *g, t_r_anim *ra, t_sprite *sp, t_tex *t);
+void	help_background_setter(t_game *g, t_color *bg, char *line, t_con *con);
 
 //validate
 void	validate_cell(t_game *game, int column_pos, int row_pos, int *flag);

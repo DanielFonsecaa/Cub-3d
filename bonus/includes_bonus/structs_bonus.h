@@ -116,11 +116,11 @@ typedef struct s_collect
 	t_tex		*frames;
 }	t_collect;
 
-typedef struct s_bunny
+typedef struct s_con
 {
 	int			x;
 	int			y;
-}	t_bunny;
+}	t_con;
 
 typedef struct s_door
 {
@@ -220,7 +220,7 @@ typedef struct s_game
 	t_ray		ray;
 	t_door		*doors;
 	t_mapi		grid;
-	t_bunny		exit;
+	t_con		exit;
 	t_color		floor;
 	t_color		cealing;
 	t_plane		plane;

@@ -64,29 +64,20 @@ void	set_floor_cealing(t_game *game, char *line, int i)
 
 void	set_background_color(t_game *game, t_color *bg, int i, char *line)
 {
-	int	j;
-	int	color;
+	t_con	counter;
 
-	j = -1;
-	while (++j < 3)
+	counter.x = i;
+	counter.y = -1;
+	while (++counter.y < 3)
+		help_background_setter(game, bg, line, &counter);
+	if (line[counter.x])
 	{
-		while (ft_iswhite_space(line[i]))
-			i++;
-		color = validate_rgb(game, line, &i);
-		if (j == 0)
-			bg->red = color;
-		if (j == 1)
-			bg->green = color;
-		if (j == 2)
-			bg->blue = color;
-	}
-	color = 0;
-	if (line[i])
-	{
-		while(ft_iswhite_space(line[i]))
-			i++;
-		color = validate_rgb(game, line, &i);
-		if (color != 0)
-			close_game(game, "Invalid Color");
+		while (ft_iswhite_space(line[counter.x]))
+			counter.x++;
+		if (line[counter.x])
+		{
+			free(line);
+			close_game(game, "Error\nInvalid Color\n");
+		}
 	}
 }

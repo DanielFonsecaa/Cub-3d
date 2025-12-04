@@ -40,6 +40,7 @@ void	fill_background(t_game *game);
 void	start(t_game *game);
 int		game_loop(t_game *game);
 bool	touch(double px, double py, t_game *game);
+void	help_background_setter(t_game *g, t_color *bg, char *line, t_con *con);
 
 //validade
 void	validate_cell(t_game *game, int column_pos, int row_pos, int *flag);

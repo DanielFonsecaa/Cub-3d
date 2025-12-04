@@ -84,3 +84,28 @@ void	verify_bonus_init(t_game *g)
 					&g->collect.size_line, &g->collect.endian);
 	}
 }
+
+void	help_background_setter(t_game *g, t_color *bg, char *line, t_con *con)
+{
+	int	color;
+
+	while (ft_iswhite_space(line[con->x]))
+		con->x++;
+	color = validate_rgb(g, line, &con->x);
+	if (con->y == 0)
+		bg->red = color;
+	if (con->y == 1)
+		bg->green = color;
+	if (con->y == 2)
+		bg->blue = color;
+	if (con->y < 2)
+	{
+		while (ft_iswhite_space(line[con->x]))
+			con->x++;
+		if (!line[con->x])
+		{
+			free(line);
+			close_game(g, "Error\nInvalid Color\n");
+		}
+	}
+}
