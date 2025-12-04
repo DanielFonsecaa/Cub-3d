@@ -23,10 +23,6 @@ void	find_collectables_and_doors(t_game *game)
 		}
 		y++;
 	}
-/*	if (game->n_collectables == 0)
-		close_game(game, NO_COLLECTABLES);
-	if (!game->has_door)
-		close_game(game, NO_EXIT);*/
 }
 
 void	add_collect_or_door(t_game *game, int x, int y, int *n_collect)
@@ -82,7 +78,6 @@ void	find_n_collect(t_game *game)
 	}
 	game->n_collectables = n_collect;
 }
-// THIS WILL NOT WORK, WHEN DOOR OPEN I THINK MAP UPDATES D TO 0
 
 void	validade_door(t_game *game, int x, int y)
 {
