@@ -1,4 +1,0 @@
-To do 
-ficheiros sem permissao -> verificar abertura
-ficheiros vazios/pastas
-ficheiros ocultos
