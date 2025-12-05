@@ -30,7 +30,7 @@ void	get_textures(t_game *game, char *line);
 void	set_direction_texture(t_game *game, char *line, int i);
 void	set_floor_cealing(t_game *game, char *line, int i);
 void	set_background_color(t_game *game, t_color *bg, int i, char *line);
-int		set_texture_path(t_tex *texture, char *line, char *dir, int i);
+void	set_texture_path(t_game *g, t_tex *texture, char *line, int i);
 int		validate_rgb(t_game *game, char *line, int *i);
 int		rgb_helper(t_game *game, char *str, char *line, int *i);
 
@@ -58,6 +58,7 @@ int		mouse_hook(int x, int y, t_game *game);
 int		verify_render_collect(t_game *g, t_r_anim *ra, int *count);
 void	helper_draw_sprite(t_game *g, t_r_anim *ra, t_sprite *sp, t_tex *t);
 void	help_background_setter(t_game *g, t_color *bg, char *line, t_con *con);
+bool	is_xpm(char *file);
 
 //validate
 void	validate_cell(t_game *game, int column_pos, int row_pos, int *flag);

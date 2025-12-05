@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   free.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dda-fons <dda-fons@student.42porto.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/05 15:51:28 by dda-fons          #+#    #+#             */
+/*   Updated: 2025/12/05 15:51:29 by dda-fons         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/cub.h"
 
 int	close_and_printf(t_game *game)
@@ -53,11 +65,23 @@ void	close_canvas(t_game *game)
 void	close_textures(t_game *game)
 {
 	if (game->north.path)
+	{
 		free(game->north.path);
+		game->north.path = NULL;
+	}
 	if (game->south.path)
+	{
 		free(game->south.path);
+		game->south.path = NULL;
+	}
 	if (game->west.path)
+	{
 		free(game->west.path);
+		game->west.path = NULL;
+	}
 	if (game->east.path)
+	{
 		free(game->east.path);
+		game->east.path = NULL;
+	}
 }

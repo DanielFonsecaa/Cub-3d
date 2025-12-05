@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   assets_bonus.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dda-fons <dda-fons@student.42porto.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/05 15:52:03 by dda-fons          #+#    #+#             */
+/*   Updated: 2025/12/05 15:52:04 by dda-fons         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes_bonus/cub_bonus.h"
 
 void	get_textures(t_game *game, char *line)
@@ -20,26 +32,45 @@ void	set_direction_texture(t_game *game, char *line, int i)
 {
 	if (!line[i + 2] || !line)
 		return ;
-	if (set_texture_path(&game->north, line, "NO", i))
-		game->assets_ready++;
-	if (set_texture_path(&game->south, line, "SO", i))
-		game->assets_ready++;
-	if (set_texture_path(&game->west, line, "WE", i))
-		game->assets_ready++;
-	if (set_texture_path(&game->east, line, "EA", i))
-		game->assets_ready++;
-	if (set_texture_path(&game->door, line, "DO", i))
-		(void)0;
+	if (ft_strncmp("NO", line + i, 2) == 0)
+	{
+		set_texture_path(game, &game->north, line, i);
+		return ;
+	}
+	if (ft_strncmp("SO", line + i, 2) == 0)
+	{
+		set_texture_path(game, &game->south, line, i);
+		return ;
+	}
+	if (ft_strncmp("WE", line + i, 2) == 0)
+	{
+		set_texture_path(game, &game->west, line, i);
+		return ;
+	}
+	if (ft_strncmp("EA", line + i, 2) == 0)
+	{
+		set_texture_path(game, &game->east, line, i);
+		return ;
+	}
 }
 
-int	set_texture_path(t_tex *texture, char *line, char *dir, int i)
+void	set_texture_path(t_game *g, t_tex *texture, char *line, int i)
 {
-	if (ft_strncmp(dir, line + i, 2) == 0)
+	if (texture->path)
 	{
-		texture->path = ft_strtrim(line + i + 2, WS);
-		return (1);
+		free(line);
+		close_game(g, MAP_INVALID);
 	}
-	return (0);
+	texture->path = ft_strtrim(line + i + 2, WS);
+	if (!texture->path || !is_xpm(texture->path))
+	{
+		if (texture->path)
+			free(texture->path);
+		free(line);
+		close_game(g, MAP_INVALID);
+	}
+	g->assets_ready++;
+	return ;
 }
 
 void	set_floor_cealing(t_game *game, char *line, int i)

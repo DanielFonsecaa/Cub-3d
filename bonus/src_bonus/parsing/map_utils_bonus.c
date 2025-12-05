@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   map_utils_bonus.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dda-fons <dda-fons@student.42porto.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/05 15:52:11 by dda-fons          #+#    #+#             */
+/*   Updated: 2025/12/05 15:52:12 by dda-fons         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes_bonus/cub_bonus.h"
 
 int	get_number_lines_map(t_mapi *map)
@@ -72,4 +84,11 @@ int	find_valid_line(char *line)
 	if (!ft_isascii(line[i]) && !ft_iswhite_space(line[i]))
 		return (0);
 	return (1);
+}
+
+bool	is_xpm(char *file)
+{
+	if (ft_strncmp(file + ft_strlen(file) - 4, ".xpm", 4) == 0)
+		return (true);
+	return (false);
 }

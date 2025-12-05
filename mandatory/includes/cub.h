@@ -28,7 +28,7 @@ void	find_skip_lines(t_mapi *map);
 void	handle_assets(t_game *game, t_mapi *map);
 void	get_textures(t_game *game, char *line);
 void	set_direction_texture(t_game *game, char *line, int i);
-int		set_texture_path(t_tex *texture, char *line, char *dir, int i);
+void	set_texture_path(t_game *g, t_tex *texture, char *line, int i);
 void	set_floor_cealing(t_game *game, char *line, int i);
 void	set_background_color(t_game *game, t_color *bg, int i, char *line);
 int		validate_rgb(t_game *game, char *line, int *i);
@@ -41,6 +41,7 @@ void	start(t_game *game);
 int		game_loop(t_game *game);
 bool	touch(double px, double py, t_game *game);
 void	help_background_setter(t_game *g, t_color *bg, char *line, t_con *con);
+bool	is_xpm(char *file);
 
 //validade
 void	validate_cell(t_game *game, int column_pos, int row_pos, int *flag);
