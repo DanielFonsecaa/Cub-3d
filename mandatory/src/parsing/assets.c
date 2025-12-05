@@ -6,7 +6,7 @@
 /*   By: dda-fons <dda-fons@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/05 15:51:32 by dda-fons          #+#    #+#             */
-/*   Updated: 2025/12/05 15:51:33 by dda-fons         ###   ########.fr       */
+/*   Updated: 2025/12/05 17:43:34 by dda-fons         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,6 @@ void	set_texture_path(t_game *g, t_tex *texture, char *line, int i)
 	texture->path = ft_strtrim(line + i + 2, WS);
 	if (!texture->path || !is_xpm(texture->path))
 	{
-		if (texture->path)
-			free(texture->path);
 		free(line);
 		close_game(g, MAP_INVALID);
 	}

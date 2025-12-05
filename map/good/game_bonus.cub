@@ -1,0 +1,25 @@
+NO textures/game/wall_north.xpm
+SO textures/game/wall_south.xpm
+WE textures/game/wall_west.xpm
+EA textures/game/wall_east.xpm
+
+X textures/game/enemies.xpm
+
+D textures/game/door.xpm
+
+F 236, 211, 159
+C 85, 90, 130
+
+11111
+10001
+10S01
+10001
+10001
+10001
+11D11
+10001
+10001
+10001
+10001
+10X01
+11111
