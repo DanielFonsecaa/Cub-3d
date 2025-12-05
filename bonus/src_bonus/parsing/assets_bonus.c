@@ -6,7 +6,7 @@
 /*   By: dda-fons <dda-fons@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/05 15:52:03 by dda-fons          #+#    #+#             */
-/*   Updated: 2025/12/05 17:49:00 by dda-fons         ###   ########.fr       */
+/*   Updated: 2025/12/05 18:12:58 by dda-fons         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ void	set_direction_texture(t_game *game, char *line, int i)
 		set_texture_path(game, &game->east, line, i);
 		return ;
 	}
+	if (ft_strncmp("DO", line + i, 2) == 0)
+		set_texture_path(game, &game->door, line, i);
 }
 
 void	set_texture_path(t_game *g, t_tex *texture, char *line, int i)
@@ -67,8 +69,9 @@ void	set_texture_path(t_game *g, t_tex *texture, char *line, int i)
 		free(line);
 		close_game(g, MAP_INVALID);
 	}
+	if (ft_strncmp("DO", line + i, 2) == 0)
+		return ;
 	g->assets_ready++;
-	return ;
 }
 
 void	set_floor_cealing(t_game *game, char *line, int i)
